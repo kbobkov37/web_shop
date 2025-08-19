@@ -2,12 +2,12 @@
 from tkinter import ttk, messagebox, Toplevel, Label, Entry, Button, Frame, filedialog, StringVar
 # import sqlite3
 # import re
-# import pandas as pd
+import pandas as pd
 import matplotlib.pyplot as plt
-# import seaborn as sns
+import seaborn as sns
 import networkx as nx
-
-# import os
+from datetime import datetime
+import os
 import csv
 from tkinter import *
 from app import *
@@ -15,16 +15,16 @@ from db import *
 from models import *
 
 class MainApp:
-    '''
+    """
     Главное окно приложения. в нем расположено 5 кнопок: Клиенты, Товары, Заказы,
     Статистика, Выход. При нажатии на любую кнопку открывается дополнительное окно,
     с соответствующим функционалом.
-    '''
+    """
     def __init__(self, root):
-        '''
+        """
         Конструктор класса
         :param root:
-        '''
+        """
         self.root = root
         self.root.title("Управление интернет-магазином")
         self.root.geometry("600x400")
@@ -53,40 +53,40 @@ class MainApp:
             btn.pack(pady=5)
 
     def open_clients_window(self):
-        '''
+        """
         Метод открытия окна для добавления, удаления, редактирования, поиска клиентов
-        '''
+        """
         ClientsWindow(Toplevel(self.root))
 
     def open_products_window(self):
-        '''
+        """
         Метод открытия окна для добавления, удаления, редактирования, поиска товаров
-        '''
+        """
         ProductsWindow(Toplevel(self.root))
 
     def open_orders_window(self):
-        '''
+        """
         Метод открытия окна для добавления, удаления, редактирования, поиска заказов
-        '''
+        """
         OrdersWindow(Toplevel(self.root))
 
     def open_stats_window(self):
-        '''
+        """
         Метод открытия окна с различной статистикой
-        '''
+        """
         StatsWindow(Toplevel(self.root))
 
     def exit_app(self):
-        '''
+        """
         Выход из приложения с подтверждением
-        '''
+        """
         if messagebox.askyesno("Выход", "Вы уверены, что хотите выйти?"):
             self.root.quit()
 
 class StatsWindow:
-    '''
+    """
     Окно статистики
-    '''
+    """
     def __init__(self, window):
         self.window = window
         self.window.title("Статистика")
@@ -178,14 +178,14 @@ class StatsWindow:
         plt.show()
 
 class ClientsWindow:
-    '''
+    """
     Окно управления клиентами
-    '''
+    """
     def __init__(self, window):
-        '''
+        """
         Конструктор класса создания новых клиентов
         :param window:
-        '''
+        """
         self.window = window
         self.window.title("Клиенты")
         self.window.geometry("1000x700")
@@ -280,9 +280,9 @@ class ClientsWindow:
         self.load_clients()
 
     def load_clients(self):
-        '''
+        """
         Загрузка всех клиентов из БД.
-        '''
+        """
         try:
             conn = sqlite3.connect(DB_NAME)
             cursor = conn.cursor()
@@ -294,22 +294,22 @@ class ClientsWindow:
             messagebox.showerror("Ошибка", f"Не удалось загрузить клиентов: {e}")
 
     def display_clients(self, clients):
-        '''
+        """
         Отображение клиентов в таблице
         :param clients:
         :return:
-        '''
+        """
         for row in self.tree.get_children():
             self.tree.delete(row)
         for client in clients:
             self.tree.insert("", "end", values=client)
 
     def filter_clients(self, *args):
-        '''
+        """
         Поиск (фильтрация) клиентов
         :param args:
         :return:
-        '''
+        """
         term = self.search_var.get().lower()
         if not term:
             filtered = self.all_clients
@@ -321,11 +321,11 @@ class ClientsWindow:
         self.display_clients(filtered)
 
     def sort_by(self, col):
-        '''
+        """
         Сортировка по колонке при нажатии на заголовок колонки
         :param col:
         :return:
-        '''
+        """
         items = [(self.tree.set(child, col), child) for child in self.tree.get_children()]
         reverse = self.sort_reverse[col]
         items.sort(reverse=reverse)
@@ -336,11 +336,11 @@ class ClientsWindow:
         self.sort_reverse[col] = not reverse
 
     def on_double_click(self, event):
-        '''
+        """
         Обработка двойного клика — редактирование
         :param event:
         :return:
-        '''
+        """
         selected = self.tree.selection()
         if not selected:
             return
@@ -364,10 +364,10 @@ class ClientsWindow:
         self.save_btn.config(text="Обновить")
 
     def save_client(self):
-        '''
+        """
         Сохранение (добавление или обновление)
         :return:
-        '''
+        """
         client = Client
 
         client.name = self.name_entry.get().strip()
@@ -405,10 +405,10 @@ class ClientsWindow:
             messagebox.showerror("Ошибка", f"Не удалось сохранить клиента: {e}")
 
     def delete_client(self):
-        '''
+        """
         Удаление клиента
         :return:
-        '''
+        """
         selected = self.tree.selection()
         if not selected:
             messagebox.showwarning("Удаление", "Выберите клиента для удаления.")
@@ -431,10 +431,10 @@ class ClientsWindow:
                 messagebox.showerror("Ошибка", f"Не удалось удалить клиента: {e}")
 
     def export_to_csv(self):
-        '''
+        """
         Экспорт в CSV
         :return:
-        '''
+        """
         if not self.all_clients:
             messagebox.showinfo("Экспорт", "Нет данных для экспорта.")
             return
@@ -457,10 +457,10 @@ class ClientsWindow:
             messagebox.showerror("Ошибка", f"Не удалось экспортировать: {e}")
 
     def clear_fields(self):
-        '''
+        """
         Очистка формы
         :return:
-        '''
+        """
         self.name_entry.delete(0, tk.END)
         self.email_entry.delete(0, tk.END)
         self.phone_entry.delete(0, tk.END)
@@ -469,14 +469,14 @@ class ClientsWindow:
         self.save_btn.config(text="Сохранить")
 
 class ProductsWindow:
-    '''
+    """
     Окно управления товарами
-    '''
+    """
     def __init__(self, window):
-        '''
+        """
         Конструктор класса окна добавления товаров
         :param window:
-        '''
+        """
         self.window = window
         self.window.title("Товары")
         self.window.geometry("1000x600")
@@ -570,10 +570,10 @@ class ProductsWindow:
         self.load_products()
 
     def load_products(self):
-        '''
+        """
         Загрузка всех товаров из БД
         :return:
-        '''
+        """
         try:
             conn = sqlite3.connect(DB_NAME)
             cursor = conn.cursor()
@@ -585,22 +585,22 @@ class ProductsWindow:
             messagebox.showerror("Ошибка", f"Не удалось загрузить товаров: {e}")
 
     def display_products(self, products):
-        '''
+        """
         Отображение товаров в таблице
         :param products:
         :return:
-        '''
+        """
         for row in self.tree.get_children():
             self.tree.delete(row)
         for product in products:
             self.tree.insert("", "end", values=product)
 
     def filter_products(self, *args):
-        '''
+        """
         Поиск (фильтрация)
         :param args:
         :return:
-        '''
+        """
         term = self.search_var.get().lower()
         if not term:
             filtered = self.all_products
@@ -612,13 +612,13 @@ class ProductsWindow:
         self.display_products(filtered)
 
     def sort_by(self, col):
-        '''
+        """
         Сортировка по колонке, получаем индекс колонки,
         определяем, по какому полю сортировать (например, "Имя" -> "name"),
         перестраиваем строки, меняем направление для следующего клика
         :param col:
         :return:
-        '''
+        """
         items = [(self.tree.set(child, col), child) for child in self.tree.get_children()]
         reverse = self.sort_reverse[col]
         items.sort(reverse=reverse)
@@ -629,11 +629,11 @@ class ProductsWindow:
         self.sort_reverse[col] = not reverse
 
     def on_double_click(self, event):
-        '''
+        """
         Обработка двойного клика — редактирование
         :param event:
         :return:
-        '''
+        """
         selected = self.tree.selection()
         if not selected:
             return
@@ -656,10 +656,10 @@ class ProductsWindow:
         self.save_btn.config(text="Обновить")
 
     def save_product(self):
-        '''
+        """
         Сохранение (добавление или обновление)
         :return:
-        '''
+        """
         product = Product
         product.name = self.name_entry.get().strip()
         product.price = self.price_entry.get().strip()
@@ -694,10 +694,10 @@ class ProductsWindow:
             messagebox.showerror("Ошибка", f"Не удалось сохранить товар: {e}")
 
     def delete_product(self):
-        '''
+        """
         Удаление товара
         :return:
-        '''
+        """
         selected = self.tree.selection()
         if not selected:
             messagebox.showwarning("Удаление", "Выберите товар для удаления.")
@@ -720,10 +720,10 @@ class ProductsWindow:
                 messagebox.showerror("Ошибка", f"Не удалось удалить товар: {e}")
 
     def export_to_csv(self):
-        '''
+        """
         Экспорт в CSV
         :return:
-        '''
+        """
         if not self.all_products:
             messagebox.showinfo("Экспорт", "Нет данных для экспорта.")
             return
@@ -745,10 +745,10 @@ class ProductsWindow:
             messagebox.showerror("Ошибка", f"Не удалось экспортировать: {e}")
 
     def clear_fields(self):
-        '''
+        """
         Очистка формы
         :return:
-        '''
+        """
         self.name_entry.delete(0, tk.END)
         self.price_entry.delete(0, tk.END)
         self.stock_entry.delete(0, tk.END)
@@ -757,10 +757,10 @@ class ProductsWindow:
 
 class OrdersWindow:
     def __init__(self, window):
-        '''
+        """
         Конструктор класса окна управления заказами
         :param window:
-        '''
+        """
         self.window = window
         self.window.title("Заказы")
         self.window.geometry("800x600")
@@ -817,10 +817,10 @@ class OrdersWindow:
         self.load_orders()
 
     def load_clients(self):
-        '''
+        """
         Загрузка клиентов из БД
         :return:
-        '''
+        """
         try:
             conn = sqlite3.connect(DB_NAME)
             clients = [f"{row[0]} - {row[1]}" for row in self.db.get_clients()]
@@ -830,10 +830,10 @@ class OrdersWindow:
             messagebox.showerror("Ошибка", f"Не удалось загрузить клиентов: {e}")
 
     def load_products(self):
-        '''
+        """
         Загрузка товаров из БД
         :return:
-        '''
+        """
         try:
             conn = sqlite3.connect(DB_NAME)
             products = [f"{row[0]} - {row[1]}" for row in self.db.get_products()]
@@ -843,10 +843,10 @@ class OrdersWindow:
             messagebox.showerror("Ошибка", f"Не удалось загрузить товары: {e}")
 
     def load_orders(self):
-        '''
+        """
         Загрузка заказов из БД
         :return:
-        '''
+        """
         for row in self.tree.get_children():
             self.tree.delete(row)
 
@@ -859,10 +859,10 @@ class OrdersWindow:
             messagebox.showerror("Ошибка", f"Не удалось загрузить заказы: {e}")
 
     def save_order(self):
-        '''
+        """
         Сохранение заказов в БД
         :return:
-        '''
+        """
         client_str = self.client_var.get()
         product_str = self.product_var.get()
         try:
@@ -875,8 +875,10 @@ class OrdersWindow:
             messagebox.showerror("Ошибка", "Все поля обязательны, количество > 0.")
             return
 
-        client_id = int(client_str.split(" - ")[0])
-        product_id = int(product_str.split(" - ")[0])
+        Order.client_id = int(client_str.split(" - ")[0])
+        Order.product_id = int(product_str.split(" - ")[0])
+        Order.quantity = quantity
+        Order.order_date = datetime.now().strftime("%Y-%m-%d")
 
         try:
             conn = sqlite3.connect(DB_NAME)
@@ -884,7 +886,7 @@ class OrdersWindow:
                 Order.client_id,
                 Order.product_id,
                 Order.quantity,
-                datetime.now().strftime("%Y-%m-%d")
+                Order.order_date
             )
             # cursor = conn.cursor()
             # cursor.execute("INSERT INTO Orders (client_id, product_id, quantity, order_date) VALUES (?, ?, ?, ?)",
@@ -898,10 +900,10 @@ class OrdersWindow:
             messagebox.showerror("Ошибка", f"Не удалось сохранить заказ: {e}")
 
     def clear_fields(self):
-        '''
+        """
         Очистка полей
         :return:
-        '''
+        """
         self.client_var.set("")
         self.product_var.set("")
         self.quantity_entry.delete(0, tk.END)
