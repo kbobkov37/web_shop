@@ -1,17 +1,17 @@
 import re
 
 class Client:
-    '''
+    """
     Класс клиента
-    '''
+    """
     def __init__(self, name: str, email: str, phone: str, address: str):
-        '''
+        """
         Конструктор класса клиента
         :param name: имя клиента
         :param email: электронная почта
         :param phone: телефон
         :param address: адрес
-        '''
+        """
         self.name = name
         self.email = email
         self.phone = phone
@@ -24,6 +24,10 @@ class Client:
             raise ValueError(f"Некорректный номер телефона: {self.phone}")
 
     def __str__(self) -> str:
+        """
+        Строковое представление объекта
+        :return:
+        """
         return (f"Client("
                 f"name='{self.name}', "
                 f"email='{self.email}', "
@@ -31,33 +35,33 @@ class Client:
                 f"address='{self.address}')")
 
     def is_valid_email(self) -> bool:
-        '''
+        """
         Проверка валидности email
         :return: True если email валиден, иначе False
-        '''
+        """
         pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
         return re.match(pattern, self.email) is not None
 
     def is_valid_phone(self) -> bool:
-        '''
+        """
         Проверка валидности номера телефона
         :return: True если номер телефона валиден, иначе False
-        '''
+        """
         pattern = r'^[\+]?[0-9\s\-]{7,15}$'
         return re.match(pattern, self.phone) is not None
 
 
 class Product:
-    '''
+    """
     Класс товара
-    '''
+    """
     def __init__(self, name: str, price: float, stock: int):
-        '''
+        """
         Конструктор класса товара
         :param name: название товара
         :param price: цена товара
         :param stock: количество на складе
-        '''
+        """
         self.name = name
         self._price = None
         self._stock = None
@@ -89,6 +93,10 @@ class Product:
         self._stock = value
 
     def __str__(self) -> str:
+        """
+        Строковое представление объекта
+        :return:
+        """
         return (f"Product("
                 f"name='{self.name}', "
                 f"price={self.price}, "
@@ -97,12 +105,12 @@ class Product:
 
 class Order:
     def __init__(self, client_id: int, product_id: int, quantity: int):
-        '''
+        """
         Конструктор класса заказа
         :param client_id: ID клиента
         :param product_id: ID продукта
         :param quantity: количество товара
-        '''
+        """
         if not isinstance(client_id, int):
             raise TypeError("client_id должен быть целым числом.")
         if not isinstance(product_id, int):
@@ -117,6 +125,10 @@ class Order:
         self.quantity = quantity
 
     def __str__(self) -> str:
+        """
+        Строковое представление объекта
+        :return:
+        """
         return (f"Order(Client={self.client_id}, "
                 f"Product={self.product_id}, "
                 f"Quantity={self.quantity})")
