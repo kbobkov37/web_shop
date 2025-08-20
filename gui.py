@@ -255,7 +255,7 @@ class ClientsWindow:
 
         for col, text in columns.items():
             self.tree.heading(col, text=text, command=lambda c=col: self.sort_by(c))
-            self.tree.column(col, width=100 if col == "ID" else 150)
+            self.tree.column(col, width=50 if col == "ID" else 150)
 
         scrollbar = Scrollbar(table_frame, orient="vertical", command=self.tree.yview)
         self.tree.configure(yscroll=scrollbar.set)
