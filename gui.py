@@ -9,7 +9,7 @@ import networkx as nx
 from datetime import datetime
 import os
 import csv
-from tkinter import *
+# from tkinter import *
 from app import *
 from db import *
 from models import *
@@ -31,7 +31,7 @@ class MainApp:
         self.root.resizable(False, False)
 
         title = tk.Label(self.root,
-                         text="Управление интернет-магазина",
+                         text="Управление интернет-магазином",
                          font=("Arial", 18),
                          pady=20)
         title.pack()
@@ -188,7 +188,8 @@ class ClientsWindow:
         """
         self.window = window
         self.window.title("Клиенты")
-        self.window.geometry("1000x700")
+        self.window.geometry("1000x600")
+        self.window.attributes("-topmost", True)
         self.db = Database()
 
         frame = Frame(self.window, padx=10, pady=10)
@@ -480,6 +481,7 @@ class ProductsWindow:
         self.window = window
         self.window.title("Товары")
         self.window.geometry("1000x600")
+        self.window.attributes("-topmost", True)
         self.db = Database()
 
         frame = Frame(self.window, padx=10, pady=10)
@@ -763,7 +765,8 @@ class OrdersWindow:
         """
         self.window = window
         self.window.title("Заказы")
-        self.window.geometry("800x600")
+        self.window.geometry("1000x600")
+        self.window.attributes("-topmost", True)
         self.db = Database()
 
         frame = Frame(self.window, padx=10, pady=10)

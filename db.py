@@ -6,6 +6,7 @@ DB_NAME = "store.db"
 class Database:
     def __init__(self, db_name=DB_NAME):
         self.conn = sqlite3.connect(db_name)
+        self.cursor = self.conn.cursor()
         self.create_tables()
 
     def create_tables(self):
@@ -40,14 +41,41 @@ class Database:
             """)
 
     def insert_client(self, name, email, phone, address=None):
+        """
+        Добавление нового клиента в БД
+        :param name:
+        :param email:
+        :param phone:
+        :param address:
+        :return:
+        """
         with self.conn:
-            self.conn.execute(
+            self.cursor.execute(
                 "INSERT INTO Clients (name, email, phone, address) VALUES (?, ?, ?, ?)",
                 (name, email, phone, address)
             )
 
+    def load_client(self):
+        """
+        Выборка всех клиентов из БД
+        :return: 
+        """
+        with self.conn:
+            self.cursor.execute("SELECT * FROM Clients")
+
+        return self.cursor.fetchall()
+
+
     def update_client(self, client_id, name=None, email=None, phone=None, address=None):
-        # Формируем динамический запрос в зависимости от переданных параметров
+        """
+        Обновляет список клиентов, для отображения в таблице
+        :param client_id:
+        :param name:
+        :param email:
+        :param phone:
+        :param address:
+        :return:
+        """
         fields = []
         params = []
 
@@ -76,17 +104,37 @@ class Database:
             )
 
     def delete_client(self, client_id):
+        """
+        Удаляет выбранного клиента из БД
+        :param client_id:
+        :return:
+        """
         with self.conn:
-            self.conn.execute("DELETE FROM Clients WHERE id = ?", (client_id,))
+            self.cursor.execute("DELETE FROM Clients WHERE id = ?", (client_id,))
 
     def insert_product(self, name, price, stock):
+        """
+        Добавляет товар в БД
+        :param name:
+        :param price:
+        :param stock:
+        :return:
+        """
         with self.conn:
-            self.conn.execute(
+            self.cursor.execute(
                 "INSERT INTO Products (name, price, stock) VALUES (?, ?, ?)",
                 (name, price, stock)
             )
 
     def update_product(self, product_id, name=None, price=None, stock=None):
+        """
+        Обновляет список товаров, для отображения в таблице
+        :param product_id:
+        :param name:
+        :param price:
+        :param stock:
+        :return:
+        """
         fields = []
         params = []
 
@@ -106,16 +154,29 @@ class Database:
         params.append(product_id)
 
         with self.conn:
-            self.conn.execute(
+            self.cursor.execute(
                 f"UPDATE Products SET {', '.join(fields)} WHERE id = ?",
                 params
             )
 
     def delete_product(self, product_id):
+        """
+        Удаляет продукт из БД
+        :param product_id:
+        :return:
+        """
         with self.conn:
-            self.conn.execute("DELETE FROM Products WHERE id = ?", (product_id,))
+            self.cursor.execute("DELETE FROM Products WHERE id = ?", (product_id,))
 
     def insert_order(self, client_id, product_id, quantity, order_date):
+        """
+        Добавляет заказ в БД
+        :param client_id:
+        :param product_id:
+        :param quantity:
+        :param order_date:
+        :return:
+        """
         with self.conn:
             self.conn.execute(
                 "INSERT INTO Orders (client_id, product_id, quantity, order_date) VALUES (?, ?, ?, ?)",
@@ -123,6 +184,15 @@ class Database:
             )
 
     def update_order(self, order_id, client_id=None, product_id=None, quantity=None, order_date=None):
+        """
+        Обновление таблицы с заказами
+        :param order_id:
+        :param client_id:
+        :param product_id:
+        :param quantity:
+        :param order_date:
+        :return:
+        """
         fields = []
         params = []
 
@@ -151,29 +221,46 @@ class Database:
             )
 
     def delete_order(self, order_id):
+        """
+        Удаление заказа
+        :param order_id:
+        :return:
+        """
         with self.conn:
-            self.conn.execute("DELETE FROM Orders WHERE id = ?", (order_id,))
+            self.cursor.execute("DELETE FROM Orders WHERE id = ?", (order_id,))
 
     def get_clients(self):
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT id, name FROM Clients")
-        return cursor.fetchall()
+        """
+        Выборка ИД и имен клиентов из таблицы клиентов
+        :return:
+        """
+        with self.conn:
+            self.cursor.execute("SELECT id, name FROM Clients")
+            return self.cursor.fetchall()
 
     def get_products(self):
-        cursor = self.conn.cursor()
-        cursor.execute("SELECT id, name FROM Products")
-        return cursor.fetchall()
+        """
+        Выборка ИД и наименования товара из таблицы товаров
+        :return:
+        """
+        with self.conn:
+            self.cursor.execute("SELECT id, name FROM Products")
+            return self.cursor.fetchall()
 
     def get_orders(self):
-        cursor = self.conn.cursor()
-        query = """
-                        SELECT o.id, c.name, p.name, o.quantity, o.order_date
-                        FROM Orders o
-                        JOIN Clients c ON o.client_id = c.id
-                        JOIN Products p ON o.product_id = p.id
-                    """
-        cursor.execute(query)
-        return cursor.fetchall()
+        """
+        Выборка для заполнения таблицы заказов
+        :return:
+        """
+        with self.conn:
+            query = """
+                            SELECT o.id, c.name, p.name, o.quantity, o.order_date
+                            FROM Orders o
+                            JOIN Clients c ON o.client_id = c.id
+                            JOIN Products p ON o.product_id = p.id
+                        """
+            self.cursor.execute(query)
+            return self.cursor.fetchall()
 
-    def close(self):
-        self.conn.close()
+    # def close(self):
+    #     self.conn.close()
