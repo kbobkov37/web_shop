@@ -1,4 +1,4 @@
-# import tkinter as tk
+import tkinter as tk
 from tkinter import ttk, messagebox, Toplevel, Label, Entry, Button, Frame, filedialog, StringVar
 # import sqlite3
 # import re
@@ -9,7 +9,7 @@ import networkx as nx
 from datetime import datetime
 import os
 import csv
-# from tkinter import *
+from tkinter import *
 from app import *
 from db import *
 from models import *
@@ -399,7 +399,9 @@ class ClientsWindow:
 
             conn.commit()
             conn.close()
+            self.window.attributes("-topmost", False)
             messagebox.showinfo("Успех", msg)
+            self.window.attributes("-topmost", True)
             self.load_clients()
             self.filter_clients()  # Применяем текущий фильтр
         except Exception as e:
@@ -689,7 +691,9 @@ class ProductsWindow:
 
             conn.commit()
             conn.close()
+            self.window.attributes("-topmost", False)
             messagebox.showinfo("Успех", msg)
+            self.window.attributes("-topmost", True)
             self.load_products()
             self.filter_products()  # Применяем текущий фильтр
         except Exception as e:
@@ -896,11 +900,15 @@ class OrdersWindow:
             #                (client_id, product_id, quantity, datetime.now().strftime("%Y-%m-%d")))
             conn.commit()
             conn.close()
+            self.window.attributes("-topmost", False)
             messagebox.showinfo("Успех", "Заказ добавлен!")
+            self.window.attributes("-topmost", True)
             self.clear_fields()
             self.load_orders()
         except Exception as e:
+            self.window.attributes("-topmost", False)
             messagebox.showerror("Ошибка", f"Не удалось сохранить заказ: {e}")
+            self.window.attributes("-topmost", True)
 
     def clear_fields(self):
         """
