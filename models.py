@@ -104,12 +104,13 @@ class Product:
 
 
 class Order:
-    def __init__(self, client_id: int, product_id: int, quantity: int):
+    def __init__(self, client_id: int, product_id: int, quantity: int, order_date: str):
         """
         Конструктор класса заказа
         :param client_id: ID клиента
         :param product_id: ID продукта
         :param quantity: количество товара
+        :order_date: дата заказа
         """
         if not isinstance(client_id, int):
             raise TypeError("client_id должен быть целым числом.")
@@ -119,19 +120,25 @@ class Order:
             raise TypeError("quantity должен быть целым числом.")
         if quantity <= 0:
             raise ValueError("quantity должен быть положительным числом.")
+        # if not isinstance(order_date, str):
+        #     raise TypeError("order_date должен быть целым числом.")
 
         self.client_id = client_id
         self.product_id = product_id
         self.quantity = quantity
+        self.order_date = order_date
 
     def __str__(self) -> str:
         """
         Строковое представление объекта
         :return:
         """
-        return (f"Order(Client={self.client_id}, "
+        return (f"Order("
+                f"Client={self.client_id}, "
                 f"Product={self.product_id}, "
-                f"Quantity={self.quantity})")
+                f"Quantity={self.quantity}),"
+                f"Order_date = {self.order_date}"
+                )
 
 
 
