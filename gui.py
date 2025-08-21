@@ -279,7 +279,6 @@ class ClientsWindow:
         client.address = self.address_entry.get().strip()
 
         try:
-            # conn = sqlite3.connect(DB_NAME)
             if self.current_client_id is None:
                 # Добавление нового
                 self.db.insert_client(
@@ -291,6 +290,7 @@ class ClientsWindow:
             else:
                 # Обновление существующего
                 self.db.update_client(
+                    self.current_client_id,
                     client.name,
                     client.email,
                     client.phone,
@@ -323,19 +323,18 @@ class ClientsWindow:
         client_id = item['values'][0]
         client_name = item['values'][1]
 
+        self.window.attributes("-topmost", False)
+
         if messagebox.askyesno("Подтверждение", f"Удалить клиента '{client_name}'?"):
             try:
-                # conn = sqlite3.connect(DB_NAME)
                 self.db.delete_client(client_id)
-                # conn.commit()
-                # conn.close()
-                self.window.attributes("-topmost", False)
                 messagebox.showinfo("Успех", "Клиент удалён.")
-                self.window.attributes("-topmost", True)
                 self.load_clients()
                 self.filter_clients()
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Не удалось удалить клиента: {e}")
+
+        self.window.attributes("-topmost", True)
 
     def export_to_csv(self):
         """
