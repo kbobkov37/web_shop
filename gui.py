@@ -278,6 +278,8 @@ class ClientsWindow:
         client.phone = self.phone_entry.get().strip()
         client.address = self.address_entry.get().strip()
 
+        self.window.attributes("-topmost", False)
+
         try:
             if self.current_client_id is None:
                 # Добавление нового
@@ -297,23 +299,22 @@ class ClientsWindow:
                     client.address
                 )
                 msg = "Клиент обновлён!"
-                self.clear_fields()  # Сбрасываем режим редактирования
+                self.clear_fields()
 
-            # conn.commit()
-            # conn.close()
-            self.window.attributes("-topmost", False)
             messagebox.showinfo("Успех", msg)
-            self.window.attributes("-topmost", True)
             self.load_clients()
-            self.filter_clients()  # Применяем текущий фильтр
+            self.filter_clients()
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось сохранить клиента: {e}")
+
+        self.window.attributes("-topmost", True)
 
     def delete_client(self):
         """
         Удаление клиента
         :return:
         """
+        self.window.attributes("-topmost", False)
         selected = self.tree.selection()
         if not selected:
             messagebox.showwarning("Удаление", "Выберите клиента для удаления.")
@@ -322,8 +323,6 @@ class ClientsWindow:
         item = self.tree.item(selected[0])
         client_id = item['values'][0]
         client_name = item['values'][1]
-
-        self.window.attributes("-topmost", False)
 
         if messagebox.askyesno("Подтверждение", f"Удалить клиента '{client_name}'?"):
             try:
@@ -341,6 +340,7 @@ class ClientsWindow:
         Экспорт в CSV
         :return:
         """
+        self.window.attributes("-topmost", False)
         if not self.all_clients:
             messagebox.showinfo("Экспорт", "Нет данных для экспорта.")
             return
@@ -361,6 +361,8 @@ class ClientsWindow:
             messagebox.showinfo("Успех", f"Данные экспортированы в {os.path.basename(file_path)}")
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось экспортировать: {e}")
+
+        self.window.attributes("-topmost", False)
 
     def clear_fields(self):
         """
@@ -552,11 +554,11 @@ class ProductsWindow:
         self.name_entry.delete(0, tk.END)
         self.name_entry.insert(0, values[1])
 
-        self.email_entry.delete(0, tk.END)
-        self.email_entry.insert(0, values[2])
+        self.price_entry.delete(0, tk.END)
+        self.price_entry.insert(0, values[2])
 
-        self.address_entry.delete(0, tk.END)
-        self.address_entry.insert(0, values[3] if values[3] else "")
+        self.stock_entry.delete(0, tk.END)
+        self.stock_entry.insert(0, values[3])
 
         # Сохранение ID для обновления
         self.current_product_id = product_id
@@ -572,6 +574,8 @@ class ProductsWindow:
         product.price = self.price_entry.get().strip()
         product.stock = self.stock_entry.get().strip()
 
+        self.window.attributes("-topmost", False)
+
         try:
             conn = sqlite3.connect(DB_NAME)
             if self.current_product_id is None:
@@ -585,6 +589,7 @@ class ProductsWindow:
             else:
                 # Обновление существующего
                 self.db.update_product(
+                    self.current_product_id,
                     Product.name,
                     Product.price,
                     Product.stock
@@ -592,21 +597,21 @@ class ProductsWindow:
                 msg = "Товар обновлён!"
                 self.clear_fields()  # Сбрасываем режим редактирования
 
-            conn.commit()
-            conn.close()
-            self.window.attributes("-topmost", False)
             messagebox.showinfo("Успех", msg)
-            self.window.attributes("-topmost", True)
             self.load_products()
             self.filter_products()  # Применяем текущий фильтр
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось сохранить товар: {e}")
+
+        self.window.attributes("-topmost", True)
 
     def delete_product(self):
         """
         Удаление товара
         :return:
         """
+        self.window.attributes("-topmost", False)
+
         selected = self.tree.selection()
         if not selected:
             messagebox.showwarning("Удаление", "Выберите товар для удаления.")
@@ -618,21 +623,21 @@ class ProductsWindow:
 
         if messagebox.askyesno("Подтверждение", f"Удалить товар '{product_name}'?"):
             try:
-                conn = sqlite3.connect(DB_NAME)
                 self.db.delete_product(product_id)
-                conn.commit()
-                conn.close()
                 messagebox.showinfo("Успех", "Товар удалён.")
                 self.load_products()
                 self.filter_products()
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Не удалось удалить товар: {e}")
 
+            self.window.attributes("-topmost", True)
+
     def export_to_csv(self):
         """
         Экспорт в CSV
         :return:
         """
+        self.window.attributes("-topmost", False)
         if not self.all_products:
             messagebox.showinfo("Экспорт", "Нет данных для экспорта.")
             return
@@ -653,6 +658,8 @@ class ProductsWindow:
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось экспортировать: {e}")
 
+        self.window.attributes("-topmost", True)
+
     def clear_fields(self):
         """
         Очистка формы
@@ -663,201 +670,6 @@ class ProductsWindow:
         self.stock_entry.delete(0, tk.END)
         self.current_product_id = None
         self.save_btn.config(text="Сохранить")
-
-# class OrdersWindow:
-#     def __init__(self, window):
-#         """
-#         Конструктор класса окна управления заказами
-#         :param window:
-#         """
-#         self.window = window
-#         self.window.title("Заказы")
-#         self.window.geometry("1000x600")
-#         self.window.attributes("-topmost", True)
-#         self.db = Database()
-#
-#         frame = Frame(self.window, padx=10, pady=10)
-#         frame.pack(fill="both", expand=True)
-#
-#         # --- Поиск ---
-#         search_frame = Frame(frame)
-#         search_frame.grid(row=0, column=0, columnspan=2, sticky="ew", pady=5)
-#         Label(search_frame, text="Поиск:").pack(side="left", padx=5)
-#         self.search_var = StringVar()
-#         self.search_var.trace("w", self.filter_orders)  # Live search
-#         Entry(search_frame, textvariable=self.search_var, width=40).pack(side="left", padx=5)
-#
-#         # Поля выбора клиента и товара
-#         Label(frame, text="Клиент:").grid(row=0, column=0, sticky="w", pady=5)
-#         self.client_var = StringVar()
-#         self.client_combo = ttk.Combobox(frame, textvariable=self.client_var, state="readonly", width=30)
-#         self.client_combo.grid(row=0, column=1, pady=5)
-#         self.load_clients()
-#
-#         Label(frame, text="Товар:").grid(row=1, column=0, sticky="w", pady=5)
-#         self.product_var = StringVar()
-#         self.product_combo = ttk.Combobox(frame, textvariable=self.product_var, state="readonly", width=30)
-#         self.product_combo.grid(row=1, column=1, pady=5)
-#         self.load_products()
-#
-#         Label(frame, text="Количество:").grid(row=2, column=0, sticky="w", pady=5)
-#         self.quantity_entry = Entry(frame, width=30)
-#         self.quantity_entry.grid(row=2, column=1, pady=5)
-#
-#         # Кнопки
-#         btn_frame = Frame(frame)
-#         btn_frame.grid(row=3, column=0, columnspan=2, pady=10)
-#
-#         Button(btn_frame, text="Сохранить", command=self.save_order).pack(side="left", padx=5)
-#         Button(btn_frame, text="Очистить", command=self.clear_fields).pack(side="left", padx=5)
-#         Button(btn_frame, text="Выйти", command=self.window.destroy).pack(side="left", padx=5)
-#
-#         # Таблица заказов
-#         self.tree = ttk.Treeview(frame, columns=("ID", "Клиент", "Товар", "Кол-во", "Дата"), show="headings")
-#         self.tree.heading("ID", text="ID")
-#         self.tree.heading("Клиент", text="Клиент")
-#         self.tree.heading("Товар", text="Товар")
-#         self.tree.heading("Кол-во", text="Кол-во")
-#         self.tree.heading("Дата", text="Дата")
-#
-#         self.tree.column("ID", width=50)
-#         self.tree.column("Кол-во", width=70)
-#         self.tree.column("Дата", width=100)
-#
-#         scrollbar = Scrollbar(frame, orient="vertical", command=self.tree.yview)
-#         self.tree.configure(yscroll=scrollbar.set)
-#         scrollbar.grid(row=4, column=2, sticky="ns")
-#         self.tree.grid(row=4, column=0, columnspan=2, pady=10, sticky="nsew")
-#
-#         frame.grid_rowconfigure(4, weight=1)
-#         frame.grid_columnconfigure(1, weight=1)
-#
-#         # Загрузка данных
-#         self.all_orders = []  # Хранит все данные для поиска и сортировки
-#         self.load_orders()
-#
-#     def load_clients(self):
-#         """
-#         Загрузка клиентов из БД
-#         :return:
-#         """
-#         try:
-#             conn = sqlite3.connect(DB_NAME)
-#             clients = [f"{row[0]} - {row[1]}" for row in self.db.get_clients()]
-#             self.client_combo['values'] = clients
-#             conn.close()
-#         except Exception as e:
-#             messagebox.showerror("Ошибка", f"Не удалось загрузить клиентов: {e}")
-#
-#     def load_products(self):
-#         """
-#         Загрузка товаров из БД
-#         :return:
-#         """
-#         try:
-#             conn = sqlite3.connect(DB_NAME)
-#             products = [f"{row[0]} - {row[1]}" for row in self.db.get_products()]
-#             self.product_combo['values'] = products
-#             conn.close()
-#         except Exception as e:
-#             messagebox.showerror("Ошибка", f"Не удалось загрузить товары: {e}")
-#
-#     def load_orders(self):
-#         """
-#         Загрузка заказов из БД
-#         :return:
-#         """
-#         for row in self.tree.get_children():
-#             self.tree.delete(row)
-#
-#         try:
-#             conn = sqlite3.connect(DB_NAME)
-#             for row in self.db.get_orders():
-#                 self.tree.insert("", "end", values=row)
-#             conn.close()
-#         except Exception as e:
-#             messagebox.showerror("Ошибка", f"Не удалось загрузить заказы: {e}")
-#
-#     def save_order(self):
-#         """
-#         Сохранение заказов в БД
-#         :return:
-#         """
-#         client_str = self.client_var.get()
-#         product_str = self.product_var.get()
-#         try:
-#             quantity = int(self.quantity_entry.get())
-#         except ValueError:
-#             messagebox.showerror("Ошибка", "Количество должно быть целым числом.")
-#             return
-#
-#         if not client_str or not product_str or quantity <= 0:
-#             messagebox.showerror("Ошибка", "Все поля обязательны, количество > 0.")
-#             return
-#
-#         Order.client_id = int(client_str.split(" - ")[0])
-#         Order.product_id = int(product_str.split(" - ")[0])
-#         Order.quantity = quantity
-#         Order.order_date = datetime.now().strftime("%Y-%m-%d")
-#
-#         try:
-#             conn = sqlite3.connect(DB_NAME)
-#             self.db.insert_order(
-#                 Order.client_id,
-#                 Order.product_id,
-#                 Order.quantity,
-#                 Order.order_date
-#             )
-#             # cursor = conn.cursor()
-#             # cursor.execute("INSERT INTO Orders (client_id, product_id, quantity, order_date) VALUES (?, ?, ?, ?)",
-#             #                (client_id, product_id, quantity, datetime.now().strftime("%Y-%m-%d")))
-#             conn.commit()
-#             conn.close()
-#             self.window.attributes("-topmost", False)
-#             messagebox.showinfo("Успех", "Заказ добавлен!")
-#             self.window.attributes("-topmost", True)
-#             self.clear_fields()
-#             self.load_orders()
-#         except Exception as e:
-#             self.window.attributes("-topmost", False)
-#             messagebox.showerror("Ошибка", f"Не удалось сохранить заказ: {e}")
-#             self.window.attributes("-topmost", True)
-#
-#     def clear_fields(self):
-#         """
-#         Очистка полей
-#         :return:
-#         """
-#         self.client_var.set("")
-#         self.product_var.set("")
-#         self.quantity_entry.delete(0, tk.END)
-#
-#     def display_orders(self, orders):
-#         """
-#         Отображение заказов в таблице
-#         :param orders:
-#         :return:
-#         """
-#         for row in self.tree.get_children():
-#             self.tree.delete(row)
-#         for order in orders:
-#             self.tree.insert("", "end", values=order)
-#
-#     def filter_orders(self, *args):
-#         """
-#         Поиск (фильтрация) заказов
-#         :param args:
-#         :return:
-#         """
-#         term = self.search_var.get().lower()
-#         if not term:
-#             filtered = self.all_orders
-#         else:
-#             filtered = [
-#                 c for c in self.all_orders
-#                 if any(term in str(field).lower() for field in c)
-#             ]
-#         self.display_orders(filtered)
 
 class StatsWindow:
     """
@@ -990,19 +802,19 @@ class OrdersWindow:
         self.client_combo.grid(row=0, column=1, padx=5, pady=5)
         self.load_clients()
 
-        Label(form_frame, text="Товар:").grid(row=0, column=0, sticky="w", padx=5, pady=5)
+        Label(form_frame, text="Товар:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
         self.product_var = StringVar()
         self.product_combo = ttk.Combobox(form_frame, textvariable=self.product_var, state="readonly", width=30)
-        self.product_combo.grid(row=0, column=3, padx=5, pady=5)
-        self.load_products()
+        self.product_combo.grid(row=1, column=1, padx=5, pady=5)
+        # self.load_products()
 
-        Label(form_frame, text="Количество:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
+        Label(form_frame, text="Количество:").grid(row=0, column=3, sticky="w", padx=5, pady=5)
         self.quantity_entry = Entry(form_frame, width=30)
-        self.quantity_entry.grid(row=1, column=1, padx=5, pady=5)
+        self.quantity_entry.grid(row=0, column=4, padx=5, pady=5)
 
-        Label(form_frame, text="Дата заказа:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
+        Label(form_frame, text="Дата заказа:").grid(row=1, column=3, sticky="w", padx=5, pady=5)
         self.order_date_entry = Entry(form_frame, width=30)
-        self.order_date_entry.grid(row=1, column=3, padx=5, pady=5)
+        self.order_date_entry.grid(row=1, column=4, padx=5, pady=5)
 
         # Кнопки формы
         btn_frame = Frame(form_frame)
@@ -1027,10 +839,10 @@ class OrdersWindow:
 
         columns = {
             "ID": "ID",
-            "Клиент": "Клиент",
-            "Товар": "Товар",
-            "Кол-во": "Кол-во",
-            "Дата": "Дата"
+            "Клиент": "client_id",
+            "Товар": "product_id",
+            "Кол-во": "quantity",
+            "Дата": "order_date"
         }
         self.sort_columns = columns
         self.sort_reverse = {col: False for col in columns}

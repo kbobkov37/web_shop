@@ -76,7 +76,7 @@ class Database:
 
             return self.cursor.fetchall()
 
-    def update_client(self, client_id, name, email, phone, address):
+    def update_client(self, client_id, name=None, email=None, phone=None, address=None):
         """
         Обновляет список клиентов, для отображения в таблице
         :param client_id:
