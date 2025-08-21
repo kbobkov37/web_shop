@@ -1,5 +1,4 @@
 import sqlite3
-# from datetime import datetime
 
 DB_NAME = "store.db"
 
@@ -148,7 +147,7 @@ class Database:
         """
         with self.conn:
             self.cursor.execute("SELECT * FROM Products")
-            # self.conn.commit()
+
             return self.cursor.fetchall()
 
     def get_products(self):
@@ -158,6 +157,7 @@ class Database:
         """
         with self.conn:
             self.cursor.execute("SELECT id, name FROM Products")
+
             return self.cursor.fetchall()
 
     def update_product(self, product_id, name=None, price=None, stock=None):
@@ -229,7 +229,7 @@ class Database:
         with self.conn:
             self.cursor.execute("SELECT * FROM Orders")
 
-        return self.cursor.fetchall()
+            return self.cursor.fetchall()
 
     def get_orders(self):
         """
@@ -244,6 +244,7 @@ class Database:
                               JOIN Products p ON o.product_id = p.id
                           """
             self.cursor.execute(query)
+
             return self.cursor.fetchall()
 
     def update_order(self, order_id, client_id=None, product_id=None, quantity=None, order_date=None):
