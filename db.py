@@ -39,8 +39,10 @@ class Database:
                     FOREIGN KEY (product_id) REFERENCES Products (id)
                     )
             """)
+            self.conn.commit()
 
-    def insert_client(self, name, email, phone, address=None):
+# ----- Работа с клиентами
+    def insert_client(self, name, email, phone, address):
         """
         Добавление нового клиента в БД
         :param name:
@@ -54,6 +56,7 @@ class Database:
                 "INSERT INTO Clients (name, email, phone, address) VALUES (?, ?, ?, ?)",
                 (name, email, phone, address)
             )
+            self.conn.commit()
 
     def load_client(self):
         """
@@ -62,11 +65,19 @@ class Database:
         """
         with self.conn:
             self.cursor.execute("SELECT * FROM Clients")
+            return self.cursor.fetchall()
 
-        return self.cursor.fetchall()
+    def get_clients(self):
+        """
+        Выборка ИД и имен клиентов из таблицы клиентов
+        :return:
+        """
+        with self.conn:
+            self.cursor.execute("SELECT id, name FROM Clients")
 
+            return self.cursor.fetchall()
 
-    def update_client(self, client_id, name=None, email=None, phone=None, address=None):
+    def update_client(self, client_id, name, email, phone, address):
         """
         Обновляет список клиентов, для отображения в таблице
         :param client_id:
@@ -102,6 +113,7 @@ class Database:
                 f"UPDATE Clients SET {', '.join(fields)} WHERE id = ?",
                 params
             )
+            self.conn.commit()
 
     def delete_client(self, client_id):
         """
@@ -111,7 +123,9 @@ class Database:
         """
         with self.conn:
             self.cursor.execute("DELETE FROM Clients WHERE id = ?", (client_id,))
+            self.conn.commit()
 
+# ----- Работа с товарами
     def insert_product(self, name, price, stock):
         """
         Добавляет товар в БД
@@ -125,6 +139,26 @@ class Database:
                 "INSERT INTO Products (name, price, stock) VALUES (?, ?, ?)",
                 (name, price, stock)
             )
+            self.conn.commit()
+
+    def load_product(self):
+        """
+        Выборка всех товаров из БД
+        :return:
+        """
+        with self.conn:
+            self.cursor.execute("SELECT * FROM Products")
+            # self.conn.commit()
+            return self.cursor.fetchall()
+
+    def get_products(self):
+        """
+        Выборка ИД и наименования товара из таблицы товаров
+        :return:
+        """
+        with self.conn:
+            self.cursor.execute("SELECT id, name FROM Products")
+            return self.cursor.fetchall()
 
     def update_product(self, product_id, name=None, price=None, stock=None):
         """
@@ -158,6 +192,7 @@ class Database:
                 f"UPDATE Products SET {', '.join(fields)} WHERE id = ?",
                 params
             )
+            self.conn.commit()
 
     def delete_product(self, product_id):
         """
@@ -167,7 +202,9 @@ class Database:
         """
         with self.conn:
             self.cursor.execute("DELETE FROM Products WHERE id = ?", (product_id,))
+            self.conn.commit()
 
+# ----- Работа с заказами
     def insert_order(self, client_id, product_id, quantity, order_date):
         """
         Добавляет заказ в БД
@@ -182,6 +219,32 @@ class Database:
                 "INSERT INTO Orders (client_id, product_id, quantity, order_date) VALUES (?, ?, ?, ?)",
                 (client_id, product_id, quantity, order_date)
             )
+            self.conn.commit()
+
+    def load_order(self):
+        """
+        Выборка всех заказов из БД
+        :return:
+        """
+        with self.conn:
+            self.cursor.execute("SELECT * FROM Orders")
+
+        return self.cursor.fetchall()
+
+    def get_orders(self):
+        """
+        Выборка для заполнения таблицы заказов
+        :return:
+        """
+        with self.conn:
+            query = """
+                              SELECT o.id, c.name, p.name, o.quantity, o.order_date
+                              FROM Orders o
+                              JOIN Clients c ON o.client_id = c.id
+                              JOIN Products p ON o.product_id = p.id
+                          """
+            self.cursor.execute(query)
+            return self.cursor.fetchall()
 
     def update_order(self, order_id, client_id=None, product_id=None, quantity=None, order_date=None):
         """
@@ -219,6 +282,7 @@ class Database:
                 f"UPDATE Orders SET {', '.join(fields)} WHERE id = ?",
                 params
             )
+            self.conn.commit()
 
     def delete_order(self, order_id):
         """
@@ -228,39 +292,4 @@ class Database:
         """
         with self.conn:
             self.cursor.execute("DELETE FROM Orders WHERE id = ?", (order_id,))
-
-    def get_clients(self):
-        """
-        Выборка ИД и имен клиентов из таблицы клиентов
-        :return:
-        """
-        with self.conn:
-            self.cursor.execute("SELECT id, name FROM Clients")
-            return self.cursor.fetchall()
-
-    def get_products(self):
-        """
-        Выборка ИД и наименования товара из таблицы товаров
-        :return:
-        """
-        with self.conn:
-            self.cursor.execute("SELECT id, name FROM Products")
-            return self.cursor.fetchall()
-
-    def get_orders(self):
-        """
-        Выборка для заполнения таблицы заказов
-        :return:
-        """
-        with self.conn:
-            query = """
-                            SELECT o.id, c.name, p.name, o.quantity, o.order_date
-                            FROM Orders o
-                            JOIN Clients c ON o.client_id = c.id
-                            JOIN Products p ON o.product_id = p.id
-                        """
-            self.cursor.execute(query)
-            return self.cursor.fetchall()
-
-    # def close(self):
-    #     self.conn.close()
+            self.conn.commit()
