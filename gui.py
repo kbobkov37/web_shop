@@ -1,4 +1,4 @@
-import tkinter as tk
+# import tkinter as tk
 from tkinter import ttk, messagebox, Toplevel, Label, Entry, Button, Frame, filedialog, StringVar
 # import sqlite3
 # import re
@@ -274,7 +274,7 @@ class ClientsWindow:
         """
         client = Client
 
-        client.name = self.name_entry.get().strip()
+        client.c_name = self.name_entry.get().strip()
         client.email = self.email_entry.get().strip()
         client.phone = self.phone_entry.get().strip()
         client.address = self.address_entry.get().strip()
@@ -285,7 +285,7 @@ class ClientsWindow:
             if self.current_client_id is None:
                 # Добавление нового
                 self.db.insert_client(
-                    client.name,
+                    client.c_name,
                     client.email,
                     client.phone,
                     client.address)
@@ -294,7 +294,7 @@ class ClientsWindow:
                 # Обновление существующего
                 self.db.update_client(
                     self.current_client_id,
-                    client.name,
+                    client.c_name,
                     client.email,
                     client.phone,
                     client.address
@@ -567,7 +567,7 @@ class ProductsWindow:
         :return:
         """
         product = Product
-        product.name = self.name_entry.get().strip()
+        product.p_name = self.name_entry.get().strip()
         product.price = self.price_entry.get().strip()
         product.stock = self.stock_entry.get().strip()
 
@@ -577,18 +577,18 @@ class ProductsWindow:
             if self.current_product_id is None:
                 # Добавление нового
                 self.db.insert_product(
-                    Product.name,
-                    Product.price,
-                    Product.stock
+                    product.p_name,
+                    product.price,
+                    product.stock
                     )
                 msg = "Товар добавлен!"
             else:
                 # Обновление существующего
                 self.db.update_product(
                     self.current_product_id,
-                    Product.name,
-                    Product.price,
-                    Product.stock
+                    product.p_name,
+                    product.price,
+                    product.stock
                     )
                 msg = "Товар обновлён!"
                 self.clear_fields()  # Сбрасываем режим редактирования
@@ -686,12 +686,8 @@ class StatsWindow:
 
     def get_data(self):
         try:
-            conn = sqlite3.connect(DB_NAME)
-            orders_df = pd.read_sql_query("SELECT * FROM Orders", conn)
-            clients_df = pd.read_sql_query("SELECT * FROM Clients", conn)
-            products_df = pd.read_sql_query("SELECT * FROM Products", conn)
-            conn.close()
-            return orders_df, clients_df, products_df
+            return self.db.get_data()
+
         except Exception as e:
             messagebox.showerror("Ошибка", f"Ошибка загрузки данных: {e}")
             return None, None, None
@@ -981,19 +977,20 @@ class OrdersWindow:
             messagebox.showerror("Ошибка", "Все поля обязательны, количество > 0.")
             return
 
-        Order.client_id = int(client_str.split(" - ")[0])
-        Order.product_id = int(product_str.split(" - ")[0])
-        Order.quantity = quantity
-        Order.order_date = self.order_date_entry.get()
+        order = Order
+        order.client_id = int(client_str.split(" - ")[0])
+        order.product_id = int(product_str.split(" - ")[0])
+        order.quantity = quantity
+        order.order_date = self.order_date_entry.get()
         # Order.order_date = datetime.now().strftime("%Y-%m-%d")
 
         try:
             # conn = sqlite3.connect(DB_NAME)
             self.db.insert_order(
-                Order.client_id,
-                Order.product_id,
-                Order.quantity,
-                Order.order_date
+                order.client_id,
+                order.product_id,
+                order.quantity,
+                order.order_date
             )
 
             self.window.attributes("-topmost", False)

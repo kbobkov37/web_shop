@@ -1,4 +1,5 @@
 import sqlite3
+import pandas as pd
 
 DB_NAME = "store.db"
 
@@ -314,3 +315,18 @@ class Database:
         with self.conn:
             self.cursor.execute("DELETE FROM Orders WHERE id = ?", (order_id,))
             self.conn.commit()
+
+# ----- Работа с отчетами и статистикой
+
+    def get_data(self):
+        """
+        Сбор данных в датафреймы
+        :return:
+        """
+        with self.conn:
+            orders_df = pd.read_sql_query("SELECT * FROM Orders", self.conn)
+            clients_df = pd.read_sql_query("SELECT * FROM Clients", self.conn)
+            products_df = pd.read_sql_query("SELECT * FROM Products", self.conn)
+
+            return orders_df, clients_df, products_df
+
