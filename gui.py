@@ -798,9 +798,10 @@ class OrdersWindow:
         # Поля выбора клиента и товара
         Label(form_frame, text="Клиент:").grid(row=0, column=0, sticky="w", padx=5, pady=5)
         self.client_var = StringVar()
+        name_client = [cl[1] for cl in self.db.get_clients()]
         self.client_combo = ttk.Combobox(
             form_frame,
-            values=[cl[1] for cl in self.db.get_clients()],
+            values=sorted(name_client),
             textvariable=self.client_var,
             state="readonly",
             width=30)
@@ -809,9 +810,10 @@ class OrdersWindow:
 
         Label(form_frame, text="Товар:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
         self.product_var = StringVar()
+        name_product = [pr[1] for pr in self.db.get_products()]
         self.product_combo = ttk.Combobox(
             form_frame,
-            values=[pr[1] for pr in self.db.get_products()],
+            values=sorted(name_product),
             textvariable=self.product_var,
             state="readonly",
             width=30)
