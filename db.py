@@ -13,7 +13,7 @@ class Database:
             self.conn.execute("""
                 CREATE TABLE IF NOT EXISTS Clients (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
+                    c_name TEXT NOT NULL,
                     email TEXT NOT NULL,
                     phone TEXT NOT NULL,
                     address TEXT
@@ -22,7 +22,7 @@ class Database:
             self.conn.execute("""
                 CREATE TABLE IF NOT EXISTS Products (
                     id INTEGER PRIMARY KEY AUTOINCREMENT,
-                    name TEXT NOT NULL,
+                    p_name TEXT NOT NULL,
                     price REAL NOT NULL CHECK (price >= 0),
                     stock INTEGER NOT NULL CHECK (stock >= 0)
                     )
@@ -41,10 +41,10 @@ class Database:
             self.conn.commit()
 
 # ----- Работа с клиентами
-    def insert_client(self, name, email, phone, address):
+    def insert_client(self, c_name, email, phone, address):
         """
         Добавление нового клиента в БД
-        :param name:
+        :param c_name:
         :param email:
         :param phone:
         :param address:
@@ -52,8 +52,8 @@ class Database:
         """
         with self.conn:
             self.cursor.execute(
-                "INSERT INTO Clients (name, email, phone, address) VALUES (?, ?, ?, ?)",
-                (name, email, phone, address)
+                "INSERT INTO Clients (c_name, email, phone, address) VALUES (?, ?, ?, ?)",
+                (c_name, email, phone, address)
             )
             self.conn.commit()
 
@@ -72,15 +72,15 @@ class Database:
         :return:
         """
         with self.conn:
-            self.cursor.execute("SELECT id, name FROM Clients")
+            self.cursor.execute("SELECT id, c_name FROM Clients")
 
             return self.cursor.fetchall()
 
-    def update_client(self, client_id, name=None, email=None, phone=None, address=None):
+    def update_client(self, client_id, c_name=None, email=None, phone=None, address=None):
         """
         Обновляет список клиентов, для отображения в таблице
         :param client_id:
-        :param name:
+        :param c_name:
         :param email:
         :param phone:
         :param address:
@@ -89,9 +89,9 @@ class Database:
         fields = []
         params = []
 
-        if name is not None:
-            fields.append("name = ?")
-            params.append(name)
+        if c_name is not None:
+            fields.append("c_name = ?")
+            params.append(c_name)
         if email is not None:
             fields.append("email = ?")
             params.append(email)
@@ -125,18 +125,18 @@ class Database:
             self.conn.commit()
 
 # ----- Работа с товарами
-    def insert_product(self, name, price, stock):
+    def insert_product(self, p_name, price, stock):
         """
         Добавляет товар в БД
-        :param name:
+        :param p_name:
         :param price:
         :param stock:
         :return:
         """
         with self.conn:
             self.cursor.execute(
-                "INSERT INTO Products (name, price, stock) VALUES (?, ?, ?)",
-                (name, price, stock)
+                "INSERT INTO Products (p_name, price, stock) VALUES (?, ?, ?)",
+                (p_name, price, stock)
             )
             self.conn.commit()
 
@@ -156,15 +156,15 @@ class Database:
         :return:
         """
         with self.conn:
-            self.cursor.execute("SELECT id, name FROM Products")
+            self.cursor.execute("SELECT id, p_name FROM Products")
 
             return self.cursor.fetchall()
 
-    def update_product(self, product_id, name=None, price=None, stock=None):
+    def update_product(self, product_id, p_name=None, price=None, stock=None):
         """
         Обновляет список товаров, для отображения в таблице
         :param product_id:
-        :param name:
+        :param p_name:
         :param price:
         :param stock:
         :return:
@@ -172,9 +172,9 @@ class Database:
         fields = []
         params = []
 
-        if name is not None:
-            fields.append("name = ?")
-            params.append(name)
+        if p_name is not None:
+            fields.append("p_name = ?")
+            params.append(p_name)
         if price is not None:
             fields.append("price = ?")
             params.append(price)
@@ -240,8 +240,8 @@ class Database:
             self.cursor.execute("""
             SELECT 
                 o.id AS order_id,
-                c.name AS "Клиент",
-                p.name AS "Товар",
+                c.c_name AS "Клиент",
+                p.p_name AS "Товар",
                 o.quantity AS "Количество",
                 o.order_date AS "Дата заказа"
             FROM Orders o
@@ -251,21 +251,21 @@ class Database:
 
             return self.cursor.fetchall()
 
-    def get_orders(self):
-        """
-        Выборка для заполнения таблицы заказов
-        :return:
-        """
-        with self.conn:
-            query = """
-                              SELECT o.id, c.name, p.name, o.quantity, o.order_date
-                              FROM Orders o
-                              JOIN Clients c ON o.client_id = c.id
-                              JOIN Products p ON o.product_id = p.id
-                          """
-            self.cursor.execute(query)
-
-            return self.cursor.fetchall()
+    # def get_orders(self):
+    #     """
+    #     Выборка для заполнения таблицы заказов
+    #     :return:
+    #     """
+    #     with self.conn:
+    #         query = """
+    #                   SELECT o.id, c.c_name, p.p_name, o.quantity, o.order_date
+    #                   FROM Orders o
+    #                   JOIN Clients c ON o.client_id = c.id
+    #                   JOIN Products p ON o.product_id = p.id
+    #                       """
+    #         self.cursor.execute(query)
+    #
+    #         return self.cursor.fetchall()
 
     def update_order(self, order_id, client_id=None, product_id=None, quantity=None, order_date=None):
         """

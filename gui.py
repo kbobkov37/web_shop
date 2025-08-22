@@ -485,11 +485,7 @@ class ProductsWindow:
         :return:
         """
         try:
-            conn = sqlite3.connect(DB_NAME)
-            cursor = conn.cursor()
-            cursor.execute("SELECT * FROM Products")
-            self.all_products = cursor.fetchall()
-            conn.close()
+            self.all_products = self.db.load_product()
             self.display_products(self.all_products)
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось загрузить товаров: {e}")
@@ -578,7 +574,6 @@ class ProductsWindow:
         self.window.attributes("-topmost", False)
 
         try:
-            conn = sqlite3.connect(DB_NAME)
             if self.current_product_id is None:
                 # Добавление нового
                 self.db.insert_product(
@@ -894,7 +889,8 @@ class OrdersWindow:
         Загрузка всех заказов из БД.
         """
         try:
-            self.display_orders(self.db.load_order())
+            self.all_orders = self.db.load_order()
+            self.display_orders(self.all_orders)
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось загрузить заказы: {e}")
 
