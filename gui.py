@@ -1,5 +1,9 @@
-# import tkinter as tk
-from tkinter import ttk, messagebox, Toplevel, Label, Entry, Button, Frame, filedialog, StringVar
+import tkinter as tk
+from tkinter import ttk
+import matplotlib.pyplot as plt
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+
+from tkinter import messagebox, Toplevel, Label, Entry, Button, Frame, filedialog, StringVar
 # import sqlite3
 # import re
 from tkcalendar import DateEntry
@@ -7,6 +11,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import networkx as nx
+from collections import Counter
 from datetime import datetime
 import os
 import csv
@@ -674,7 +679,9 @@ class StatsWindow:
     def __init__(self, window):
         self.window = window
         self.window.title("Статистика")
-        self.window.geometry("800x600")
+        self.window.geometry("1000x600")
+        self.window.attributes("-topmost", True)
+        self.db = Database()
 
         frame = Frame(self.window, padx=10, pady=10)
         frame.pack(fill="both", expand=True)
@@ -684,9 +691,17 @@ class StatsWindow:
         Button(frame, text="Граф связей клиентов", command=self.client_network).pack(pady=5)
         Button(frame, text="Выйти", command=self.window.destroy).pack(pady=10)
 
+        stats_frame = LabelFrame(frame, text="Статистика", padx=10, pady=10)
+        stats_frame.pack(pady=10)
+
+        canvas = FigureCanvasTkAgg(plt, stats_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
+
     def get_data(self):
         try:
-            return self.db.get_data()
+            self.all_df = self.db.get_datas()
+            return self.all_df
 
         except Exception as e:
             messagebox.showerror("Ошибка", f"Ошибка загрузки данных: {e}")
@@ -698,11 +713,11 @@ class StatsWindow:
             return
 
         top = orders_df.groupby('client_id').size().nlargest(5).reset_index(name='count')
-        top = top.merge(clients_df[['id', 'name']], left_on='client_id', right_on='id')
-        top = top[['name', 'count']]
+        top = top.merge(clients_df[['id', 'c_name']], left_on='client_id', right_on='id')
+        top = top[['c_name', 'count']]
 
         plt.figure(figsize=(8, 5))
-        sns.barplot(data=top, x='count', y='name', palette='viridis')
+        sns.barplot(data=top, x='count', y='c_name', palette='viridis')
         plt.title("Топ-5 клиентов по количеству заказов")
         plt.xlabel("Количество заказов")
         plt.ylabel("Клиент")
@@ -740,8 +755,8 @@ class StatsWindow:
             for j in range(i + 1, len(clients)):
                 common = client_products[clients[i]] & client_products[clients[j]]
                 if len(common) > 0:
-                    name1 = clients_df[clients_df['id'] == clients[i]]['name'].values[0]
-                    name2 = clients_df[clients_df['id'] == clients[j]]['name'].values[0]
+                    name1 = clients_df[clients_df['id'] == clients[i]]['c_name'].values[0]
+                    name2 = clients_df[clients_df['id'] == clients[j]]['c_name'].values[0]
                     G.add_edge(name1, name2, weight=len(common))
 
         if G.number_of_edges() == 0:
@@ -1065,3 +1080,275 @@ class OrdersWindow:
         self.order_date_entry.delete(0, tk.END)
         self.current_order_id = None
         self.save_btn.config(text="Сохранить")
+
+
+class Statistics_1520:
+    def __init__(self, parent, db: Database):
+        self.window = window
+        self.window.title("Статистика")
+        self.window.geometry("1000x600")
+        self.window.attributes("-topmost", True)
+        self.db = Database()
+
+        self.parent = parent
+        self.db = db
+
+        # Создаем LabelFrame для каждого вида статистики
+        self.top_clients_frame = ttk.LabelFrame(parent, text="Топ-5 клиентов")
+        self.top_clients_frame.pack(fill='both', expand=True, padx=10, pady=10)
+
+        self.orders_trend_frame = ttk.LabelFrame(parent, text="Динамика заказов")
+        self.orders_trend_frame.pack(fill='both', expand=True, padx=10, pady=10)
+
+        self.clients_products_frame = ttk.LabelFrame(parent, text="Граф связей клиентов и продуктов")
+        self.clients_products_frame.pack(fill='both', expand=True, padx=10, pady=10)
+
+        # Вызов методов для отображения графиков внутри LabelFrame
+        self.show_top_5_clients()
+        self.show_orders_trend()
+        self.show_clients_products_graph()
+
+    def show_top_5_clients(self):
+        cursor = self.db.conn.cursor()
+        cursor.execute("""
+            SELECT c.id, c.name, COUNT(o.id) as order_count
+            FROM Clients c
+            LEFT JOIN Orders o ON c.id = o.client_id
+            GROUP BY c.id, c.name
+            ORDER BY order_count DESC
+            LIMIT 5
+        """)
+        results = cursor.fetchall()
+        names = [row[1] for row in results]
+        counts = [row[2] for row in results]
+
+        fig, ax = plt.subplots(figsize=(6, 4))
+        ax.barh(names, counts)
+        ax.set_xlabel('Количество заказов')
+        ax.set_title('Топ-5 клиентов по заказам')
+        ax.invert_yaxis()
+
+        canvas = FigureCanvasTkAgg(fig, master=self.top_clients_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill='both', expand=True)
+
+    def show_orders_trend(self):
+        cursor = self.db.conn.cursor()
+        cursor.execute("""
+            SELECT order_date, COUNT(*) FROM Orders
+            GROUP BY order_date
+            ORDER BY order_date
+        """)
+        results = cursor.fetchall()
+        dates = [row[0] for row in results]
+        counts = [row[1] for row in results]
+
+        fig, ax = plt.subplots(figsize=(6, 4))
+        ax.plot(dates, counts, marker='o')
+        ax.set_xlabel('Дата заказа')
+        ax.set_ylabel('Количество заказов')
+        ax.set_title('Динамика заказов по датам')
+        plt.setp(ax.get_xticklabels(), rotation=45)
+
+        canvas = FigureCanvasTkAgg(fig, master=self.orders_trend_frame)
+        canvas.draw()
+        canvas.get_tk_widget().pack(fill='both', expand=True)
+
+    def show_clients_products_graph(self):
+        G = nx.Graph()
+
+        cursor = self.db.conn.cursor()
+        cursor.execute("""
+            SELECT c.name, p.name FROM Orders o
+            JOIN Clients c ON o.client_id = c.id
+            JOIN Products p ON o.product_id = p.id
+        """)
+        edges = cursor.fetchall()
+
+        clients = set([row[0] for row in edges])
+        products = set([row[1] for row in edges])
+
+        G.add_nodes_from(clients, type='client')
+        G.add_nodes_from(products, type='product')
+
+        for client_name, product_name in edges:
+            G.add_edge(client_name, product_name)
+
+        pos = nx.spring_layout(G)
+
+        fig, ax = plt.subplots(figsize=(8, 6))
+
+        client_nodes = [n for n, attr in G.nodes(data=True) if attr['type'] == 'client']
+        product_nodes = [n for n, attr in G.nodes(data=True) if attr['type'] == 'product']
+
+        nx.draw_networkx_nodes(G, pos,
+                               nodelist=client_nodes,
+                               node_color='lightblue',
+                               node_size=500,
+                               label='Клиенты',
+                               ax=ax)
+
+        nx.draw_networkx_nodes(G, pos,
+                               nodelist=product_nodes,
+                               node_color='lightgreen',
+                               node_size=500,
+                               label='Продукты',
+                               ax=ax)
+
+        nx.draw_networkx_edges(G, pos, ax=ax)
+
+        # Лейблы и легенда
+
+    nx.draw_networkx_labels(G, pos, ax=ax)
+    legend_handles = [
+        plt.Line2D([0], [0], marker='o', color='w', label='Клиенты',
+                   markerfacecolor='lightblue', markersize=10),
+        plt.Line2D([0], [0], marker='o', color='w', label='Продукты',
+                   markerfacecolor='lightgreen', markersize=10)
+    ]
+    ax.legend(handles=legend_handles)
+    ax.set_title('Граф связей клиентов и продуктов')
+    ax.axis('off')
+
+    canvas = FigureCanvasTkAgg(fig, master=self.clients_products_frame)
+    canvas.draw()
+    canvas.get_tk_widget().pack(fill='both', expand=True)
+
+
+class Statistics_1530:
+    def __init__(self, parent, db: Database):
+        self.parent = parent
+        self.db = db
+
+        # Создаем общий LabelFrame для отображения графиков
+        self.chart_frame = ttk.LabelFrame(parent, text="Статистика")
+        self.chart_frame.pack(fill='both', expand=True, padx=10, pady=10)
+
+        # Создаем кнопки для выбора вида статистики
+        button_frame = ttk.Frame(parent)
+        button_frame.pack(pady=5)
+
+        btn_top_clients = ttk.Button(button_frame, text="Топ-5 клиентов", command=self.show_top_5_clients)
+        btn_orders_trend = ttk.Button(button_frame, text="Динамика заказов", command=self.show_orders_trend)
+        btn_graph_clients_products = ttk.Button(button_frame, text="Граф связей",
+                                                command=self.show_clients_products_graph)
+        btn_exit = ttk.Button(button_frame, text="Выйти", command=self.window.destroy).pack(pady=10)
+
+        btn_top_clients.pack(side='left', padx=5)
+        btn_orders_trend.pack(side='left', padx=5)
+        btn_graph_clients_products.pack(side='left', padx=5)
+        btn_exit.pack(side='left', padx=5)
+
+        # Изначально показываем один из графиков или ничего не показываем
+        self.current_canvas = None
+
+    def clear_chart(self):
+        # Удаляем предыдущий график, если есть
+        if self.current_canvas:
+            self.current_canvas.get_tk_widget().destroy()
+            self.current_canvas = None
+
+    def show_top_5_clients(self):
+        self.clear_chart()
+
+        results = self.db.top_5_client()
+        names = [row[1] for row in results]
+        counts = [row[2] for row in results]
+
+        fig, ax = plt.subplots(figsize=(6, 4))
+        ax.barh(names, counts)
+        ax.set_xlabel('Количество заказов')
+        ax.set_title('Топ-5 клиентов по заказам')
+        ax.invert_yaxis()
+
+        self.current_canvas = FigureCanvasTkAgg(fig, master=self.chart_frame)
+        self.current_canvas.draw()
+        self.current_canvas.get_tk_widget().pack(fill='both', expand=True)
+
+    def show_orders_trend(self):
+        self.clear_chart()
+
+        results = self.db.show_order_trend()
+        dates = [row[0] for row in results]
+        counts = [row[1] for row in results]
+
+        fig, ax = plt.subplots(figsize=(6, 4))
+        ax.plot(dates, counts, marker='o')
+        ax.set_xlabel('Дата заказа')
+        ax.set_ylabel('Количество заказов')
+        ax.set_title('Динамика заказов по датам')
+
+        plt.setp(ax.get_xticklabels(), rotation=45)
+
+        self.current_canvas = FigureCanvasTkAgg(fig, master=self.chart_frame)
+        self.current_canvas.draw()
+        self.current_canvas.get_tk_widget().pack(fill='both', expand=True)
+
+    def show_clients_products_graph(self):
+        """
+        Строим граф связей клиентов и продуктов
+        :return:
+        """
+        self.clear_chart()
+
+        G = nx.Graph()
+
+        edges = self.db.show_client_product_graph()
+
+        clients = set([row[0] for row in edges])
+        products = set([row[1] for row in edges])
+
+        G.add_nodes_from(clients, type='client')
+        G.add_nodes_from(products, type='product')
+
+        for client_name, product_name in edges:
+            G.add_edge(client_name, product_name)
+
+        pos = nx.spring_layout(G)
+
+        fig, ax = plt.subplots(figsize=(8, 6))
+
+        client_nodes = [n for n, attr in G.nodes(data=True) if attr['type'] == 'client']
+        product_nodes = [n for n, attr in G.nodes(data=True) if attr['type'] == 'product']
+
+        nx.draw_networkx_nodes(G, pos,
+                               nodelist=client_nodes,
+                               node_color='lightblue',
+                               node_size=500,
+                               label='Клиенты',
+                               ax=ax)
+
+        nx.draw_networkx_nodes(G, pos,
+                               nodelist=product_nodes,
+                               node_color='lightgreen',
+                               node_size=500,
+                               label='Продукты',
+                               ax=ax)
+
+        nx.draw_networkx_edges(G, pos, ax=ax)
+
+        nx.draw_networkx_labels(G, pos, ax=ax)
+
+        # Легенда вручную через Patch или Line2D объекты
+        import matplotlib.patches as mpatches
+        legend_handles = [
+            mpatches.Patch(color='lightblue', label='Клиенты'),
+            mpatches.Patch(color='lightgreen', label='Продукты')
+        ]
+        ax.legend(handles=legend_handles)
+
+        ax.set_title('Граф связей клиентов и продуктов')
+        ax.axis('off')
+
+        self.current_canvas = FigureCanvasTkAgg(fig, master=self.chart_frame)
+        self.current_canvas.draw()
+        self.current_canvas.get_tk_widget().pack(fill='both', expand=True)
+# ----- Пример использования
+    # db = Database()
+    # stats = Statistics(db)
+    #
+    # stats.top_5_clients()  # Построит бар-чарт топ-5 клиентов по заказам
+    # stats.orders_trend()  # Построит график динамики заказов по датам
+    # stats.clients_products_graph()  # Построит граф связей клиентов и продуктов
+    #
+    # db.close()

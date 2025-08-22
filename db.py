@@ -222,16 +222,6 @@ class Database:
             )
             self.conn.commit()
 
-    # def load_order(self):
-    #     """
-    #     Выборка всех заказов из БД
-    #     :return:
-    #     """
-    #     with self.conn:
-    #         self.cursor.execute("SELECT * FROM Orders")
-    #
-    #         return self.cursor.fetchall()
-
     def load_order(self):
         """
         Выборка всех заказов из БД
@@ -251,22 +241,6 @@ class Database:
                                     """)
 
             return self.cursor.fetchall()
-
-    # def get_orders(self):
-    #     """
-    #     Выборка для заполнения таблицы заказов
-    #     :return:
-    #     """
-    #     with self.conn:
-    #         query = """
-    #                   SELECT o.id, c.c_name, p.p_name, o.quantity, o.order_date
-    #                   FROM Orders o
-    #                   JOIN Clients c ON o.client_id = c.id
-    #                   JOIN Products p ON o.product_id = p.id
-    #                       """
-    #         self.cursor.execute(query)
-    #
-    #         return self.cursor.fetchall()
 
     def update_order(self, order_id, client_id=None, product_id=None, quantity=None, order_date=None):
         """
@@ -318,7 +292,7 @@ class Database:
 
 # ----- Работа с отчетами и статистикой
 
-    def get_data(self):
+    def get_datas(self):
         """
         Сбор данных в датафреймы
         :return:
@@ -329,4 +303,48 @@ class Database:
             products_df = pd.read_sql_query("SELECT * FROM Products", self.conn)
 
             return orders_df, clients_df, products_df
+
+    def top_5_client(self):
+        """
+        Выбираем 5 лучших клиентов по заказам
+        :return:
+        """
+        with self.conn:
+            self.cursor.execute("""
+                SELECT c.id, c.c_name, COUNT(o.id) as order_count
+                FROM Clients c
+                LEFT JOIN Orders o ON c.id = o.client_id
+                GROUP BY c.id, c.c_name
+                ORDER BY order_count DESC
+                LIMIT 5
+            """)
+
+            return self.cursor.fetchall()
+
+    def show_order_trend(self):
+        """
+        Получаем количество заказов по датам
+        :return:
+        """
+        with self.conn:
+            self.cursor.execute("""
+                SELECT order_date, COUNT(*) 
+                FROM Orders
+                GROUP BY order_date
+                ORDER BY order_date
+            """)
+
+    def show_client_product_graph(self):
+        """
+        Строим графа по клиентам
+        :return:
+        """
+        self.cursor.execute("""
+               SELECT c.c_name, p.p_name 
+               FROM Orders o
+               JOIN Clients c ON o.client_id = c.id
+               JOIN Products p ON o.product_id = p.id
+           """)
+
+
 
