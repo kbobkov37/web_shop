@@ -7,6 +7,7 @@ import tkinter as tk
 if __name__ == "__main__":
 
     root = tk.Tk()
+    root.title('Управление интернет магазином')
     app = MainApp(root)
     root.mainloop()
     unittest.main()

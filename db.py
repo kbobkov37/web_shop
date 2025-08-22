@@ -77,6 +77,17 @@ class Database:
 
             return self.cursor.fetchall()
 
+
+    def get_client_id(self, cl_name:str):
+        """
+        Выборка ИД и имен клиентов из таблицы клиентов
+        :return:
+        """
+        with self.conn:
+            self.cursor.execute("SELECT id FROM Clients WHERE c_name = ?", (cl_name))
+
+            return self.cursor.fetchone()
+
     def update_client(self, client_id, c_name=None, email=None, phone=None, address=None):
         """
         Обновляет список клиентов, для отображения в таблице
@@ -160,6 +171,16 @@ class Database:
             self.cursor.execute("SELECT id, p_name FROM Products")
 
             return self.cursor.fetchall()
+
+    def get_product_id(self, pr_name:str):
+        """
+        Выборка ИД и имен клиентов из таблицы клиентов
+        :return:
+        """
+        with self.conn:
+            self.cursor.execute("SELECT id FROM Products WHERE p_name = ?", (pr_name))
+
+            return self.cursor.fetchone()
 
     def update_product(self, product_id, p_name=None, price=None, stock=None):
         """
@@ -334,17 +355,21 @@ class Database:
                 ORDER BY order_date
             """)
 
+            return self.cursor.fetchall()
+
     def show_client_product_graph(self):
         """
         Строим графа по клиентам
         :return:
         """
-        self.cursor.execute("""
-               SELECT c.c_name, p.p_name 
-               FROM Orders o
-               JOIN Clients c ON o.client_id = c.id
-               JOIN Products p ON o.product_id = p.id
-           """)
+        with self.conn:
+            self.cursor.execute("""
+                   SELECT c.c_name, p.p_name 
+                   FROM Orders o
+                   JOIN Clients c ON o.client_id = c.id
+                   JOIN Products p ON o.product_id = p.id
+               """)
+        return self.cursor.fetchall()
 
 
 

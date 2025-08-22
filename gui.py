@@ -17,7 +17,7 @@ import os
 import csv
 from tkinter import *
 from app import *
-from db import *
+from db import Database
 from models import *
 
 class MainApp:
@@ -672,113 +672,13 @@ class ProductsWindow:
         self.current_product_id = None
         self.save_btn.config(text="Сохранить")
 
-class StatsWindow:
-    """
-    Окно статистики
-    """
-    def __init__(self, window):
-        self.window = window
-        self.window.title("Статистика")
-        self.window.geometry("1000x600")
-        self.window.attributes("-topmost", True)
-        self.db = Database()
-
-        frame = Frame(self.window, padx=10, pady=10)
-        frame.pack(fill="both", expand=True)
-
-        Button(frame, text="Показать топ-5 клиентов", command=self.top_clients).pack(pady=5)
-        Button(frame, text="Динамика заказов", command=self.order_trend).pack(pady=5)
-        Button(frame, text="Граф связей клиентов", command=self.client_network).pack(pady=5)
-        Button(frame, text="Выйти", command=self.window.destroy).pack(pady=10)
-
-        stats_frame = LabelFrame(frame, text="Статистика", padx=10, pady=10)
-        stats_frame.pack(pady=10)
-
-        canvas = FigureCanvasTkAgg(plt, stats_frame)
-        canvas.draw()
-        canvas.get_tk_widget().pack(fill=tk.BOTH, expand=True)
-
-    def get_data(self):
-        try:
-            self.all_df = self.db.get_datas()
-            return self.all_df
-
-        except Exception as e:
-            messagebox.showerror("Ошибка", f"Ошибка загрузки данных: {e}")
-            return None, None, None
-
-    def top_clients(self):
-        orders_df, clients_df, _ = self.get_data()
-        if orders_df is None:
-            return
-
-        top = orders_df.groupby('client_id').size().nlargest(5).reset_index(name='count')
-        top = top.merge(clients_df[['id', 'c_name']], left_on='client_id', right_on='id')
-        top = top[['c_name', 'count']]
-
-        plt.figure(figsize=(8, 5))
-        sns.barplot(data=top, x='count', y='c_name', palette='viridis')
-        plt.title("Топ-5 клиентов по количеству заказов")
-        plt.xlabel("Количество заказов")
-        plt.ylabel("Клиент")
-        plt.tight_layout()
-        plt.show()
-
-    def order_trend(self):
-        orders_df, _, _ = self.get_data()
-        if orders_df is None:
-            return
-
-        orders_df['order_date'] = pd.to_datetime(orders_df['order_date'])
-        trend = orders_df.groupby('order_date').size()
-
-        plt.figure(figsize=(10, 5))
-        sns.lineplot(data=trend, marker='o')
-        plt.title("Динамика заказов по датам")
-        plt.xlabel("Дата")
-        plt.ylabel("Количество заказов")
-        plt.xticks(rotation=45)
-        plt.tight_layout()
-        plt.show()
-
-    def client_network(self):
-        orders_df, clients_df, _ = self.get_data()
-        if orders_df is None:
-            return
-
-        # Граф по общим товарам
-        G = nx.Graph()
-        client_products = orders_df.groupby('client_id')['product_id'].apply(set)
-
-        clients = list(client_products.index)
-        for i in range(len(clients)):
-            for j in range(i + 1, len(clients)):
-                common = client_products[clients[i]] & client_products[clients[j]]
-                if len(common) > 0:
-                    name1 = clients_df[clients_df['id'] == clients[i]]['c_name'].values[0]
-                    name2 = clients_df[clients_df['id'] == clients[j]]['c_name'].values[0]
-                    G.add_edge(name1, name2, weight=len(common))
-
-        if G.number_of_edges() == 0:
-            messagebox.showinfo("Граф", "Нет связанных клиентов по товарам.")
-            return
-
-        plt.figure(figsize=(10, 8))
-        pos = nx.spring_layout(G, k=0.5)
-        nx.draw(G, pos, with_labels=True, node_size=800, node_color='skyblue', font_size=10, font_weight='bold', edge_color='gray')
-        labels = nx.get_edge_attributes(G, 'weight')
-        nx.draw_networkx_edge_labels(G, pos, edge_labels=labels)
-        plt.title("Граф связей клиентов (по общим товарам)")
-        plt.tight_layout()
-        plt.show()
-
 class OrdersWindow:
     """
     Окно управления заказами
     """
     def __init__(self, window):
         """
-        Конструктор класса создания новых заказов
+        Конструктор класса создания/редактирования новых заказов
         :param window:
         """
         self.window = window
@@ -790,7 +690,7 @@ class OrdersWindow:
         frame = Frame(self.window, padx=10, pady=10)
         frame.pack(fill="both", expand=True)
 
-        # --- Поиск ---
+        # Поле поиска клиента и товара
         search_frame = Frame(frame)
         search_frame.grid(row=0, column=0, columnspan=2, sticky="ew", pady=5)
         Label(search_frame, text="Поиск:").pack(side="left", padx=5)
@@ -798,34 +698,31 @@ class OrdersWindow:
         self.search_var.trace("w", self.filter_orders)  # Live search
         Entry(search_frame, textvariable=self.search_var, width=40).pack(side="left", padx=5)
 
-        # --- Форма добавления/редактирования ---
         form_frame = LabelFrame(frame, text="Добавить/Редактировать заказ", padx=10, pady=10)
         form_frame.grid(row=1, column=0, columnspan=2, sticky="ew", pady=10)
 
         # Поля выбора клиента и товара
         Label(form_frame, text="Клиент:").grid(row=0, column=0, sticky="w", padx=5, pady=5)
         self.client_var = StringVar()
-        name_client = [cl[1] for cl in self.db.get_clients()]
+        name_client = [cl[1] for cl in self.db.get_clients()]   # список для комбобокса
         self.client_combo = ttk.Combobox(
-            form_frame,
-            values=sorted(name_client),
-            textvariable=self.client_var,
-            state="readonly",
-            width=30)
+                                        form_frame,
+                                        values=sorted(name_client),
+                                        textvariable=self.client_var,
+                                        state="readonly",
+                                        width=30)
         self.client_combo.grid(row=0, column=1, padx=5, pady=5)
-        # self.db.get_clients()
 
         Label(form_frame, text="Товар:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
         self.product_var = StringVar()
-        name_product = [pr[1] for pr in self.db.get_products()]
+        name_product = [pr[1] for pr in self.db.get_products()]   # список для комбобокса
         self.product_combo = ttk.Combobox(
-            form_frame,
-            values=sorted(name_product),
-            textvariable=self.product_var,
-            state="readonly",
-            width=30)
+                                        form_frame,
+                                        values=sorted(name_product),
+                                        textvariable=self.product_var,
+                                        state="readonly",
+                                        width=30)
         self.product_combo.grid(row=1, column=1, padx=5, pady=5)
-        # self.db.get_products()
 
         Label(form_frame, text="Количество:").grid(row=0, column=3, sticky="w", padx=5, pady=5)
         self.quantity_entry = Entry(form_frame, width=30)
@@ -980,8 +877,13 @@ class OrdersWindow:
         Сохранение (добавление или обновление)
         :return:
         """
-        client_str = self.client_var.get()
-        product_str = self.product_var.get()
+        self.window.attributes("-topmost", False)
+        # client_str = self.client_var.get()
+        # product_str = self.product_var.get()
+        client_str = self.client_combo.get()
+        product_str = self.product_combo.get()
+        # client_str = self.client_var
+        # product_str = self.product_var
         try:
             quantity = int(self.quantity_entry.get())
         except ValueError:
@@ -991,10 +893,11 @@ class OrdersWindow:
         if not client_str or not product_str or quantity <= 0:
             messagebox.showerror("Ошибка", "Все поля обязательны, количество > 0.")
             return
-
+        print(f'{client_str=}, {product_str=}')
+        pass
         order = Order
-        order.client_id = int(client_str.split(" - ")[0])
-        order.product_id = int(product_str.split(" - ")[0])
+        order.client_id = self.db.get_client_id(client_str)
+        order.product_id = self.db.get_product_id(product_str)
         order.quantity = quantity
         order.order_date = self.order_date_entry.get()
         # Order.order_date = datetime.now().strftime("%Y-%m-%d")
@@ -1008,13 +911,10 @@ class OrdersWindow:
                 order.order_date
             )
 
-            self.window.attributes("-topmost", False)
             messagebox.showinfo("Успех", "Заказ добавлен!")
-            self.window.attributes("-topmost", True)
             self.clear_fields()
             self.load_orders()
         except Exception as e:
-            self.window.attributes("-topmost", False)
             messagebox.showerror("Ошибка", f"Не удалось сохранить заказ: {e}")
             self.window.attributes("-topmost", True)
 
@@ -1023,25 +923,27 @@ class OrdersWindow:
         Удаление заказа
         :return:
         """
+        self.window.attributes("-topmost", False)
         selected = self.tree.selection()
         if not selected:
             messagebox.showwarning("Удаление", "Выберите заказ для удаления.")
             return
 
         item = self.tree.item(selected[0])
-        order_id = item['values']
+        order_id = item['values'][0]
         # client_name = item['values'][1]
 
         if messagebox.askyesno("Подтверждение", f"Удалить заказ '{order_id}'?"):
             try:
                 # conn = sqlite3.connect(DB_NAME)
                 self.db.delete_order(order_id)
-
                 messagebox.showinfo("Успех", "Заказ удалён.")
                 self.load_orders()
                 self.filter_orders()
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Не удалось удалить заказ: {e}")
+
+            self.window.attributes("-topmost", True)
 
     def export_to_csv(self):
         """
@@ -1081,165 +983,50 @@ class OrdersWindow:
         self.current_order_id = None
         self.save_btn.config(text="Сохранить")
 
-
-class Statistics_1520:
-    def __init__(self, parent, db: Database):
+class StatsWindow:
+    def __init__(self, window):
+        """
+        Конструктор класса статистики
+        :param window:
+        """
         self.window = window
         self.window.title("Статистика")
         self.window.geometry("1000x600")
         self.window.attributes("-topmost", True)
         self.db = Database()
 
-        self.parent = parent
-        self.db = db
-
-        # Создаем LabelFrame для каждого вида статистики
-        self.top_clients_frame = ttk.LabelFrame(parent, text="Топ-5 клиентов")
-        self.top_clients_frame.pack(fill='both', expand=True, padx=10, pady=10)
-
-        self.orders_trend_frame = ttk.LabelFrame(parent, text="Динамика заказов")
-        self.orders_trend_frame.pack(fill='both', expand=True, padx=10, pady=10)
-
-        self.clients_products_frame = ttk.LabelFrame(parent, text="Граф связей клиентов и продуктов")
-        self.clients_products_frame.pack(fill='both', expand=True, padx=10, pady=10)
-
-        # Вызов методов для отображения графиков внутри LabelFrame
-        self.show_top_5_clients()
-        self.show_orders_trend()
-        self.show_clients_products_graph()
-
-    def show_top_5_clients(self):
-        cursor = self.db.conn.cursor()
-        cursor.execute("""
-            SELECT c.id, c.name, COUNT(o.id) as order_count
-            FROM Clients c
-            LEFT JOIN Orders o ON c.id = o.client_id
-            GROUP BY c.id, c.name
-            ORDER BY order_count DESC
-            LIMIT 5
-        """)
-        results = cursor.fetchall()
-        names = [row[1] for row in results]
-        counts = [row[2] for row in results]
-
-        fig, ax = plt.subplots(figsize=(6, 4))
-        ax.barh(names, counts)
-        ax.set_xlabel('Количество заказов')
-        ax.set_title('Топ-5 клиентов по заказам')
-        ax.invert_yaxis()
-
-        canvas = FigureCanvasTkAgg(fig, master=self.top_clients_frame)
-        canvas.draw()
-        canvas.get_tk_widget().pack(fill='both', expand=True)
-
-    def show_orders_trend(self):
-        cursor = self.db.conn.cursor()
-        cursor.execute("""
-            SELECT order_date, COUNT(*) FROM Orders
-            GROUP BY order_date
-            ORDER BY order_date
-        """)
-        results = cursor.fetchall()
-        dates = [row[0] for row in results]
-        counts = [row[1] for row in results]
-
-        fig, ax = plt.subplots(figsize=(6, 4))
-        ax.plot(dates, counts, marker='o')
-        ax.set_xlabel('Дата заказа')
-        ax.set_ylabel('Количество заказов')
-        ax.set_title('Динамика заказов по датам')
-        plt.setp(ax.get_xticklabels(), rotation=45)
-
-        canvas = FigureCanvasTkAgg(fig, master=self.orders_trend_frame)
-        canvas.draw()
-        canvas.get_tk_widget().pack(fill='both', expand=True)
-
-    def show_clients_products_graph(self):
-        G = nx.Graph()
-
-        cursor = self.db.conn.cursor()
-        cursor.execute("""
-            SELECT c.name, p.name FROM Orders o
-            JOIN Clients c ON o.client_id = c.id
-            JOIN Products p ON o.product_id = p.id
-        """)
-        edges = cursor.fetchall()
-
-        clients = set([row[0] for row in edges])
-        products = set([row[1] for row in edges])
-
-        G.add_nodes_from(clients, type='client')
-        G.add_nodes_from(products, type='product')
-
-        for client_name, product_name in edges:
-            G.add_edge(client_name, product_name)
-
-        pos = nx.spring_layout(G)
-
-        fig, ax = plt.subplots(figsize=(8, 6))
-
-        client_nodes = [n for n, attr in G.nodes(data=True) if attr['type'] == 'client']
-        product_nodes = [n for n, attr in G.nodes(data=True) if attr['type'] == 'product']
-
-        nx.draw_networkx_nodes(G, pos,
-                               nodelist=client_nodes,
-                               node_color='lightblue',
-                               node_size=500,
-                               label='Клиенты',
-                               ax=ax)
-
-        nx.draw_networkx_nodes(G, pos,
-                               nodelist=product_nodes,
-                               node_color='lightgreen',
-                               node_size=500,
-                               label='Продукты',
-                               ax=ax)
-
-        nx.draw_networkx_edges(G, pos, ax=ax)
-
-        # Лейблы и легенда
-
-    nx.draw_networkx_labels(G, pos, ax=ax)
-    legend_handles = [
-        plt.Line2D([0], [0], marker='o', color='w', label='Клиенты',
-                   markerfacecolor='lightblue', markersize=10),
-        plt.Line2D([0], [0], marker='o', color='w', label='Продукты',
-                   markerfacecolor='lightgreen', markersize=10)
-    ]
-    ax.legend(handles=legend_handles)
-    ax.set_title('Граф связей клиентов и продуктов')
-    ax.axis('off')
-
-    canvas = FigureCanvasTkAgg(fig, master=self.clients_products_frame)
-    canvas.draw()
-    canvas.get_tk_widget().pack(fill='both', expand=True)
-
-
-class Statistics_1530:
-    def __init__(self, parent, db: Database):
-        self.parent = parent
-        self.db = db
-
-        # Создаем общий LabelFrame для отображения графиков
-        self.chart_frame = ttk.LabelFrame(parent, text="Статистика")
-        self.chart_frame.pack(fill='both', expand=True, padx=10, pady=10)
+        frame = Frame(self.window, padx=10, pady=10)
+        frame.pack(fill="both", expand=True)
 
         # Создаем кнопки для выбора вида статистики
-        button_frame = ttk.Frame(parent)
+        button_frame = ttk.Frame(frame)
         button_frame.pack(pady=5)
 
-        btn_top_clients = ttk.Button(button_frame, text="Топ-5 клиентов", command=self.show_top_5_clients)
-        btn_orders_trend = ttk.Button(button_frame, text="Динамика заказов", command=self.show_orders_trend)
-        btn_graph_clients_products = ttk.Button(button_frame, text="Граф связей",
+        btn_top_clients = ttk.Button(button_frame,
+                                     text="Топ-5 клиентов",
+                                     command=self.show_top_5_clients)
+        btn_orders_trend = ttk.Button(button_frame,
+                                      text="Динамика заказов",
+                                      command=self.show_orders_trend)
+        btn_graph_clients_products = ttk.Button(button_frame,
+                                                text="Граф связей",
                                                 command=self.show_clients_products_graph)
-        btn_exit = ttk.Button(button_frame, text="Выйти", command=self.window.destroy).pack(pady=10)
+        btn_exit = ttk.Button(button_frame,
+                              text="Выйти",
+                              command=self.window.destroy)
 
-        btn_top_clients.pack(side='left', padx=5)
-        btn_orders_trend.pack(side='left', padx=5)
-        btn_graph_clients_products.pack(side='left', padx=5)
-        btn_exit.pack(side='left', padx=5)
+        btn_top_clients.pack(side='left',
+                             padx=5)
+        btn_orders_trend.pack(side='left',
+                              padx=5)
+        btn_graph_clients_products.pack(side='left',
+                                        padx=5)
+        btn_exit.pack(side='left',
+                      padx=5)
 
-        # Изначально показываем один из графиков или ничего не показываем
+        self.chart_frame = ttk.LabelFrame(frame, text="Статистика")
+        self.chart_frame.pack(fill='both', expand=True, padx=10, pady=10)
+
         self.current_canvas = None
 
     def clear_chart(self):
@@ -1343,12 +1130,3 @@ class Statistics_1530:
         self.current_canvas = FigureCanvasTkAgg(fig, master=self.chart_frame)
         self.current_canvas.draw()
         self.current_canvas.get_tk_widget().pack(fill='both', expand=True)
-# ----- Пример использования
-    # db = Database()
-    # stats = Statistics(db)
-    #
-    # stats.top_5_clients()  # Построит бар-чарт топ-5 клиентов по заказам
-    # stats.orders_trend()  # Построит график динамики заказов по датам
-    # stats.clients_products_graph()  # Построит граф связей клиентов и продуктов
-    #
-    # db.close()
