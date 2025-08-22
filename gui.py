@@ -798,15 +798,25 @@ class OrdersWindow:
         # Поля выбора клиента и товара
         Label(form_frame, text="Клиент:").grid(row=0, column=0, sticky="w", padx=5, pady=5)
         self.client_var = StringVar()
-        self.client_combo = ttk.Combobox(form_frame, textvariable=self.client_var, state="readonly", width=30)
+        self.client_combo = ttk.Combobox(
+            form_frame,
+            values=[cl[1] for cl in self.db.get_clients()],
+            textvariable=self.client_var,
+            state="readonly",
+            width=30)
         self.client_combo.grid(row=0, column=1, padx=5, pady=5)
-        self.load_clients()
+        # self.db.get_clients()
 
         Label(form_frame, text="Товар:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
         self.product_var = StringVar()
-        self.product_combo = ttk.Combobox(form_frame, textvariable=self.product_var, state="readonly", width=30)
+        self.product_combo = ttk.Combobox(
+            form_frame,
+            values=[pr[1] for pr in self.db.get_products()],
+            textvariable=self.product_var,
+            state="readonly",
+            width=30)
         self.product_combo.grid(row=1, column=1, padx=5, pady=5)
-        # self.load_products()
+        # self.db.get_products()
 
         Label(form_frame, text="Количество:").grid(row=0, column=3, sticky="w", padx=5, pady=5)
         self.quantity_entry = Entry(form_frame, width=30)
