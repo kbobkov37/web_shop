@@ -221,13 +221,33 @@ class Database:
             )
             self.conn.commit()
 
+    # def load_order(self):
+    #     """
+    #     Выборка всех заказов из БД
+    #     :return:
+    #     """
+    #     with self.conn:
+    #         self.cursor.execute("SELECT * FROM Orders")
+    #
+    #         return self.cursor.fetchall()
+
     def load_order(self):
         """
         Выборка всех заказов из БД
         :return:
         """
         with self.conn:
-            self.cursor.execute("SELECT * FROM Orders")
+            self.cursor.execute("""
+            SELECT 
+                o.id AS order_id,
+                c.name AS "Клиент",
+                p.name AS "Товар",
+                o.quantity AS "Количество",
+                o.order_date AS "Дата заказа"
+            FROM Orders o
+            JOIN Clients c ON o.client_id = c.id
+            JOIN Products p ON o.product_id = p.id
+                                    """)
 
             return self.cursor.fetchall()
 

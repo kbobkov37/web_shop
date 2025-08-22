@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox, Toplevel, Label, Entry, Button, Frame, filedialog, StringVar
 # import sqlite3
 # import re
+from tkcalendar import DateEntry
 import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
@@ -825,7 +826,10 @@ class OrdersWindow:
         self.quantity_entry.grid(row=0, column=4, padx=5, pady=5)
 
         Label(form_frame, text="Дата заказа:").grid(row=1, column=3, sticky="w", padx=5, pady=5)
-        self.order_date_entry = Entry(form_frame, width=30)
+        self.order_date_entry = DateEntry(
+            form_frame,
+            date_pattern="yyyy-mm-dd",
+            width=30)
         self.order_date_entry.grid(row=1, column=4, padx=5, pady=5)
 
         # Кнопки формы
@@ -984,10 +988,11 @@ class OrdersWindow:
         Order.client_id = int(client_str.split(" - ")[0])
         Order.product_id = int(product_str.split(" - ")[0])
         Order.quantity = quantity
-        Order.order_date = datetime.now().strftime("%Y-%m-%d")
+        Order.order_date = self.order_date_entry.get()
+        # Order.order_date = datetime.now().strftime("%Y-%m-%d")
 
         try:
-            conn = sqlite3.connect(DB_NAME)
+            # conn = sqlite3.connect(DB_NAME)
             self.db.insert_order(
                 Order.client_id,
                 Order.product_id,
@@ -1021,7 +1026,7 @@ class OrdersWindow:
 
         if messagebox.askyesno("Подтверждение", f"Удалить заказ '{order_id}'?"):
             try:
-                conn = sqlite3.connect(DB_NAME)
+                # conn = sqlite3.connect(DB_NAME)
                 self.db.delete_order(order_id)
 
                 messagebox.showinfo("Успех", "Заказ удалён.")
