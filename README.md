@@ -4,6 +4,7 @@
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
 ![Tkinter](https://img.shields.io/badge/GUI-Tkinter-green)
+![Matplotlib](https://img.shields.io/badge/Plot-Matplotlib-green)
 ![SQLite](https://img.shields.io/badge/Database-SQLite-lightgrey)
 ![License](https://img.shields.io/badge/License-MIT-yellow)
 
@@ -51,10 +52,29 @@
 
 ---
 
+## 🛠 Технологии
+
+- **Python 3.13** — основной язык.
+- **Tkinter** — графический интерфейс.
+- **Matplotlib** — построение графиков.
+- **NetworkX** — построение и анализ графов.
+- **adjust-text** — умное позиционирование текста.
+- **SQLite** — локальная база данных (или PostgreSQL/MySQL — при необходимости).
+
+---
 ## 🚀 Быстрый запуск
 
 ### 1. Клонируйте репозиторий
+```
+git clone https://github.com/kbobkov37/web_shop.git
+cd web_shop-app
+```
+### 2. Установите зависимости:
+```
+pip install -r requirements.txt
+```
+### 3. Запустите приложение:
+```
+python main.py
+```
 
-```bash
-git clone https://github.com/ваше-имя/online-store-app.git
-cd online-store-app
