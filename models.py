@@ -93,6 +93,10 @@ class Product:
         self.price = price  # вызовет сеттер
         self.stock = stock  # вызовет сеттер
 
+        # Валидация при создании
+        if not self.name:
+            raise ValueError(f"Наименование товара не может быть пустым: {self.name}")
+
     @property
     def price(self) -> float:
         """

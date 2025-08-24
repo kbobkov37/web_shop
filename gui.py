@@ -4,9 +4,11 @@ from tkinter import messagebox, filedialog
 from tkinter import ttk
 from tkinter import Frame, Label, Entry, Button, StringVar, LabelFrame, Scrollbar
 from tkcalendar import DateEntry
-import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
 import networkx as nx
+import matplotlib.pyplot as plt
+import matplotlib.patches as mpatches
+from adjustText import adjust_text
 import csv
 import os
 from models import *
@@ -1088,7 +1090,7 @@ class StatsWindow:
     def show_top_5_clients(self):
         """
         Отображает горизонтальную столбчатую диаграмму топ-5 клиентов по количеству заказов.
-        Получает данные из `Database.top_5_client()` и строит график с помощью Matplotlib.
+        Получает данные из `self.db.top_5_client()` и строит график с помощью Matplotlib.
         """
         self.clear_chart()
         results = self.db.top_5_client()
@@ -1100,11 +1102,22 @@ class StatsWindow:
         names = [row[1] for row in results]
         counts = [row[2] for row in results]
 
-        fig, ax = plt.subplots(figsize=(6, 4))
-        ax.barh(names, counts)
+        fig, ax = plt.subplots(figsize=(8, 4))
+        bars = ax.barh(names, counts)
         ax.set_xlabel('Количество заказов')
         ax.set_title('Топ-5 клиентов по заказам')
         ax.invert_yaxis()
+
+        # Добавляем значения в конец каждого столбца
+        for i, (bar, count) in enumerate(zip(bars, counts)):
+            width = bar.get_width()
+            ax.text(width + max(counts) * 0.01,  # Небольшой отступ от конца столбца
+                    bar.get_y() + bar.get_height() / 2,
+                    str(count),
+                    ha='left', va='center', fontsize=10, fontweight='bold')
+
+        # Увеличиваем левый отступ, чтобы имена клиентов не обрезались
+        fig.subplots_adjust(left=0.2)
 
         self.current_canvas = FigureCanvasTkAgg(fig, master=self.chart_frame)
         self.current_canvas.draw()
@@ -1112,9 +1125,8 @@ class StatsWindow:
 
     def show_orders_trend(self):
         """
-        Отображает линейный график динамики заказов по датам.
-        Получает данные из `self.db.show_order_trend()` и строит график с точками.
-        Ось X — даты, ось Y — количество заказов.
+        Отображает стилизованный линейный график динамики заказов по датам.
+        При наведении мыши на точку отображается количество заказов.
         """
         self.clear_chart()
         results = self.db.show_order_trend()
@@ -1126,12 +1138,62 @@ class StatsWindow:
         dates = [row[0] for row in results]
         counts = [row[1] for row in results]
 
-        fig, ax = plt.subplots(figsize=(6, 4))
-        ax.plot(dates, counts, marker='o')
-        ax.set_xlabel('Дата заказа')
-        ax.set_ylabel('Количество заказов')
-        ax.set_title('Динамика заказов по датам')
-        plt.setp(ax.get_xticklabels(), rotation=45)
+        # Стиль
+        plt.style.use('seaborn-v0_8')
+        fig, ax = plt.subplots(figsize=(8, 5))
+
+        # Построение графика
+        line, = ax.plot(dates, counts, marker='o', linewidth=2.5, markersize=6,
+                        color='#1f77b4', markerfacecolor='#ffffff',
+                        markeredgecolor='#1f77b4', markeredgewidth=2)
+
+        # Добавляем сетку
+        ax.grid(True, linestyle='--', alpha=0.6, axis='y')
+        ax.set_xlabel('Дата заказа', fontsize=11, fontweight='bold', color='#333')
+        ax.set_ylabel('Количество заказов', fontsize=11, fontweight='bold', color='#333')
+        ax.set_title('Динамика заказов по датам', fontsize=14, fontweight='bold', pad=20, color='#2c3e50')
+
+        # Поворот меток
+        plt.setp(ax.get_xticklabels(), rotation=45, ha='right', fontsize=10, color='#555')
+
+        # Убираем лишние рамки
+        ax.spines['top'].set_visible(False)
+        ax.spines['right'].set_visible(False)
+        ax.spines['left'].set_color('#ccc')
+        ax.spines['bottom'].set_color('#ccc')
+
+        fig.tight_layout(pad=2.5)
+
+        # === Логика подсказок при наведении ===
+        annot = ax.annotate("", xy=(0, 0), xytext=(10, 10), textcoords="offset points",
+                            bbox=dict(boxstyle="round", facecolor="wheat", alpha=0.9),
+                            fontsize=10, color="#333", zorder=100)
+        annot.set_visible(False)
+
+        def on_hover(event):
+            if event.inaxes == ax:
+                cont, ind = line.contains(event)
+                if cont:
+                    index = ind["ind"][0]  # индекс ближайшей точки
+                    x = line.get_xdata()[index]
+                    y = line.get_ydata()[index]
+                    annot.xy = (x, y)
+                    annot.set_text(f"Заказов: {int(y)}")
+                    annot.set_visible(True)
+                    fig.canvas.draw_idle()
+                else:
+                    if annot.get_visible():
+                        annot.set_visible(False)
+                        fig.canvas.draw_idle()
+            else:
+                if annot.get_visible():
+                    annot.set_visible(False)
+                    fig.canvas.draw_idle()
+
+        # Привязка события
+        fig.canvas.mpl_connect("motion_notify_event", on_hover)
+
+        # === Конец логики подсказок ===
 
         self.current_canvas = FigureCanvasTkAgg(fig, master=self.chart_frame)
         self.current_canvas.draw()
@@ -1139,45 +1201,120 @@ class StatsWindow:
 
     def show_clients_products_graph(self):
         """
-        Отображает граф связей между клиентами и товарами.
-        Каждый клиент и товар — узел. Ребро — заказ. Клиенты отображаются синими,
-        товары — зелёными. Используется NetworkX и Matplotlib.
+        Отображает стилизованный граф связей между клиентами и продуктами.
+        Использует adjust_text для предотвращения наложения подписей.
         """
         self.clear_chart()
+
+        # Получаем ограничение
+        limit_map = {"Все": None, "Топ-5": 5, "Топ-10": 10, "Топ-20": 20, "Топ-50": 50, "Топ-100": 100}
+        selected = "Топ-50"
+        limit = limit_map.get(selected)
+
         edges = self.db.show_client_product_graph()
 
         if not edges:
             messagebox.showinfo("Граф", "Нет данных для построения графа.")
             return
 
-        G = nx.Graph()
+        G_full = nx.Graph()
         clients = set(row[0] for row in edges)
         products = set(row[1] for row in edges)
 
-        G.add_nodes_from(clients, type='client')
-        G.add_nodes_from(products, type='product')
-        G.add_edges_from(edges)
+        G_full.add_nodes_from(clients, type='client')
+        G_full.add_nodes_from(products, type='product')
+        G_full.add_edges_from(edges)
 
-        pos = nx.spring_layout(G)
-        fig, ax = plt.subplots(figsize=(8, 6))
+        if limit is not None:
+            # Считаем степень (количество связей) для каждого узла
+            node_degrees = sorted(G_full.degree(), key=lambda x: x[1], reverse=True)
+            top_nodes = {node for node, deg in node_degrees[:limit]}
 
-        client_nodes = [n for n, attr in G.nodes(data=True) if attr['type'] == 'client']
-        product_nodes = [n for n, attr in G.nodes(data=True) if attr['type'] == 'product']
+            # Оставляем только топовые узлы и рёбра между ними
+            G = G_full.subgraph(top_nodes).copy()
+        else:
+            G = G_full  # Все узлы
 
-        nx.draw_networkx_nodes(G, pos, nodelist=client_nodes, node_color='lightblue', node_size=500, label='Клиенты', ax=ax)
-        nx.draw_networkx_nodes(G, pos, nodelist=product_nodes, node_color='lightgreen', node_size=500, label='Продукты', ax=ax)
-        nx.draw_networkx_edges(G, pos, ax=ax)
-        nx.draw_networkx_labels(G, pos, ax=ax)
+        if len(G.nodes) == 0:
+            messagebox.showinfo("Граф", "Нет узлов для отображения после фильтрации.")
+            return
 
-        import matplotlib.patches as mpatches
-        legend_handles = [
-            mpatches.Patch(color='lightblue', label='Клиенты'),
-            mpatches.Patch(color='lightgreen', label='Продукты')
+        # === Раскладка ===
+        pos = nx.kamada_kawai_layout(G) if len(G.nodes) > 1 else nx.spring_layout(G)
+
+        fig, ax = plt.subplots(figsize=(10, 7))
+        ax.set_facecolor('#f9f9f9')
+
+        node_size = 300
+
+        # Разделяем узлы по типу
+        client_nodes = [n for n, attr in G.nodes(data=True) if attr.get('type') == 'client']
+        product_nodes = [n for n, attr in G.nodes(data=True) if attr.get('type') == 'product']
+
+        # Рисуем узлы
+        if client_nodes:
+            nx.draw_networkx_nodes(G, pos,
+                                   nodelist=client_nodes,
+                                   node_shape='o',
+                                   node_color='#6baed6',
+                                   node_size=node_size,
+                                   edgecolors='#2171b5',
+                                   linewidths=1.5,
+                                   alpha=0.9,
+                                   ax=ax)
+
+        if product_nodes:
+            nx.draw_networkx_nodes(G, pos,
+                                   nodelist=product_nodes,
+                                   node_shape='s',
+                                   node_color='#74c476',
+                                   node_size=node_size,
+                                   edgecolors='#238b45',
+                                   linewidths=1.5,
+                                   alpha=0.9,
+                                   ax=ax)
+
+        # Рёбра
+        if len(G.edges) > 0:
+            nx.draw_networkx_edges(G, pos,
+                                   width=1.0,
+                                   alpha=0.5,
+                                   edge_color='#555555',
+                                   ax=ax)
+
+        # Подписи — через adjust_text
+        texts = []
+        for node in G.nodes():
+            x, y = pos[node]
+            text = ax.text(x, y, node, fontsize=9, ha='center', va='center', wrap=True)
+            texts.append(text)
+
+        if texts:
+            adjust_text(texts,
+                        expand_text=(1.1, 1.3),
+                        expand_points=(1.1, 1.3),
+                        force_text=(0.2, 0.5),
+                        force_points=(0.1, 0.3),
+                        arrowprops=dict(arrowstyle='->', color='gray', lw=0.5, alpha=0.5),
+                        ax=ax,
+                        lim=1000)
+
+        # === Легенда ===
+        legend_elements = [
+            mpatches.Patch(facecolor='#6baed6', edgecolor='#2171b5', label='Клиенты', linewidth=1.5),
+            mpatches.Patch(facecolor='#74c476', edgecolor='#238b45', label='Продукты', linewidth=1.5)
         ]
-        ax.legend(handles=legend_handles)
-        ax.set_title('Граф связей клиентов и продуктов')
-        ax.axis('off')
+        ax.legend(handles=legend_elements, loc='upper left', fontsize=10, frameon=True, fancybox=True, shadow=True)
 
+        # Заголовок
+        title = f"Граф связей «Клиенты — Продукты» — {selected}"
+        ax.set_title(title, fontsize=14, fontweight='bold', color='#2c3e50', pad=20)
+
+        ax.axis('off')
+        fig.tight_layout()
+
+        # Встраиваем в Tkinter
         self.current_canvas = FigureCanvasTkAgg(fig, master=self.chart_frame)
         self.current_canvas.draw()
         self.current_canvas.get_tk_widget().pack(fill='both', expand=True)
+
