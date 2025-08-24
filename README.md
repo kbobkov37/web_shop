@@ -46,3 +46,25 @@
 ```bash
 git clone https://github.com/kbobkov37/web_shop.git
 cd online-store-app
+
+
+
+web-shop/
+│
+├── main.py                     # Главное приложение 
+├── gui.py                        # GUI
+├── database.py               # Работа с SQLite
+├── models.py                  # Классы Client, Product, Order
+├── requirements.txt       # Зависимости
+├── README.md            # Документация проекта
+│
+├── tests/
+│   └── test_models.py        # Юнит-тесты
+│
+└── docs/
+    ├── conf.py
+    ├── index.rst
+    ├── modules.rst
+    ├── _static/
+    ├── _templates/
+    └── make.bat, Makefile    # Автогенерируются Sphinx
