@@ -30,10 +30,18 @@
 ![Main App](docs/_images/main_app.png)
 
 ### Управление клиентами
-![Clients](docs/_images/clients.png)
+![Clients](docs/_images/client.png)
+![Clients](docs/_images/client_search.png)
+![Clients](docs/_images/client_sort.png)
+![Clients](docs/_images/client_d-clck.png)
 
-### Статистика: Топ-5 клиентов
-![Stats](docs/_images/stats.png)
+### Статистика: 
+####Топ-5 клиентов по заказам
+![Stats](docs/_images/stat_top-5.png)
+####Динамика заказов по датам
+![Stats](docs/_images/dyn_orders.png)
+####Граф связей клиентов и товаров
+![Stats](docs/_images/graph_top-50.png)
 
 > 💡 *Примечание: Чтобы добавить реальные изображения, поместите скриншоты в папку `docs/_images/` и обновите пути.*
 
@@ -44,27 +52,5 @@
 ### 1. Клонируйте репозиторий
 
 ```bash
-git clone https://github.com/kbobkov37/web_shop.git
+git clone https://github.com/ваше-имя/online-store-app.git
 cd online-store-app
-
-
-
-web-shop/
-│
-├── main.py                     # Главное приложение 
-├── gui.py                        # GUI
-├── database.py               # Работа с SQLite
-├── models.py                  # Классы Client, Product, Order
-├── requirements.txt       # Зависимости
-├── README.md            # Документация проекта
-│
-├── tests/
-│   └── test_models.py        # Юнит-тесты
-│
-└── docs/
-    ├── conf.py
-    ├── index.rst
-    ├── modules.rst
-    ├── _static/
-    ├── _templates/
-    └── make.bat, Makefile    # Автогенерируются Sphinx
