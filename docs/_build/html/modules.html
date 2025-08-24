@@ -1,0 +1,797 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Модули &mdash; Документация интернет-магазина</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="_static/translations.js?v=cd1d70c9"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="genindex.html" />
+    <link rel="search" title="Поиск" href="search.html" />
+    <link rel="prev" title="Добро пожаловать в документацию интернет-магазина!" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Интернет магазин
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Модули</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#test_models.TestClient"><code class="docutils literal notranslate"><span class="pre">TestClient</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestClient.test_client_creation"><code class="docutils literal notranslate"><span class="pre">TestClient.test_client_creation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestClient.test_invalid_email_raises_error_on_init"><code class="docutils literal notranslate"><span class="pre">TestClient.test_invalid_email_raises_error_on_init()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestClient.test_invalid_phone_raises_error_on_init"><code class="docutils literal notranslate"><span class="pre">TestClient.test_invalid_phone_raises_error_on_init()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestClient.test_str_method"><code class="docutils literal notranslate"><span class="pre">TestClient.test_str_method()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestClient.test_valid_email"><code class="docutils literal notranslate"><span class="pre">TestClient.test_valid_email()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestClient.test_valid_phone"><code class="docutils literal notranslate"><span class="pre">TestClient.test_valid_phone()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#test_models.TestOrder"><code class="docutils literal notranslate"><span class="pre">TestOrder</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestOrder.test_order_client_id_non_int"><code class="docutils literal notranslate"><span class="pre">TestOrder.test_order_client_id_non_int()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestOrder.test_order_creation"><code class="docutils literal notranslate"><span class="pre">TestOrder.test_order_creation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestOrder.test_order_product_id_non_int"><code class="docutils literal notranslate"><span class="pre">TestOrder.test_order_product_id_non_int()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestOrder.test_order_quantity_negative"><code class="docutils literal notranslate"><span class="pre">TestOrder.test_order_quantity_negative()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestOrder.test_order_quantity_non_int"><code class="docutils literal notranslate"><span class="pre">TestOrder.test_order_quantity_non_int()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestOrder.test_order_quantity_positive"><code class="docutils literal notranslate"><span class="pre">TestOrder.test_order_quantity_positive()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestOrder.test_order_quantity_zero"><code class="docutils literal notranslate"><span class="pre">TestOrder.test_order_quantity_zero()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestOrder.test_str_method"><code class="docutils literal notranslate"><span class="pre">TestOrder.test_str_method()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#test_models.TestProduct"><code class="docutils literal notranslate"><span class="pre">TestProduct</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestProduct.test_price_setter_negative"><code class="docutils literal notranslate"><span class="pre">TestProduct.test_price_setter_negative()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestProduct.test_price_setter_non_numeric"><code class="docutils literal notranslate"><span class="pre">TestProduct.test_price_setter_non_numeric()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestProduct.test_price_setter_valid"><code class="docutils literal notranslate"><span class="pre">TestProduct.test_price_setter_valid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestProduct.test_product_creation"><code class="docutils literal notranslate"><span class="pre">TestProduct.test_product_creation()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestProduct.test_stock_setter_negative"><code class="docutils literal notranslate"><span class="pre">TestProduct.test_stock_setter_negative()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestProduct.test_stock_setter_non_integer"><code class="docutils literal notranslate"><span class="pre">TestProduct.test_stock_setter_non_integer()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestProduct.test_stock_setter_valid"><code class="docutils literal notranslate"><span class="pre">TestProduct.test_stock_setter_valid()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#test_models.TestProduct.test_str_method"><code class="docutils literal notranslate"><span class="pre">TestProduct.test_str_method()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#gui.ClientsWindow"><code class="docutils literal notranslate"><span class="pre">ClientsWindow</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ClientsWindow.clear_fields"><code class="docutils literal notranslate"><span class="pre">ClientsWindow.clear_fields()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ClientsWindow.delete_client"><code class="docutils literal notranslate"><span class="pre">ClientsWindow.delete_client()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ClientsWindow.display_clients"><code class="docutils literal notranslate"><span class="pre">ClientsWindow.display_clients()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ClientsWindow.export_to_csv"><code class="docutils literal notranslate"><span class="pre">ClientsWindow.export_to_csv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ClientsWindow.filter_clients"><code class="docutils literal notranslate"><span class="pre">ClientsWindow.filter_clients()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ClientsWindow.load_clients"><code class="docutils literal notranslate"><span class="pre">ClientsWindow.load_clients()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ClientsWindow.on_double_click"><code class="docutils literal notranslate"><span class="pre">ClientsWindow.on_double_click()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ClientsWindow.save_client"><code class="docutils literal notranslate"><span class="pre">ClientsWindow.save_client()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ClientsWindow.sort_by"><code class="docutils literal notranslate"><span class="pre">ClientsWindow.sort_by()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#gui.MainApp"><code class="docutils literal notranslate"><span class="pre">MainApp</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gui.MainApp.exit_app"><code class="docutils literal notranslate"><span class="pre">MainApp.exit_app()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.MainApp.open_clients_window"><code class="docutils literal notranslate"><span class="pre">MainApp.open_clients_window()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.MainApp.open_orders_window"><code class="docutils literal notranslate"><span class="pre">MainApp.open_orders_window()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.MainApp.open_products_window"><code class="docutils literal notranslate"><span class="pre">MainApp.open_products_window()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.MainApp.open_stats_window"><code class="docutils literal notranslate"><span class="pre">MainApp.open_stats_window()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#gui.OrdersWindow"><code class="docutils literal notranslate"><span class="pre">OrdersWindow</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gui.OrdersWindow.clear_fields"><code class="docutils literal notranslate"><span class="pre">OrdersWindow.clear_fields()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.OrdersWindow.delete_order"><code class="docutils literal notranslate"><span class="pre">OrdersWindow.delete_order()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.OrdersWindow.display_orders"><code class="docutils literal notranslate"><span class="pre">OrdersWindow.display_orders()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.OrdersWindow.export_to_csv"><code class="docutils literal notranslate"><span class="pre">OrdersWindow.export_to_csv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.OrdersWindow.filter_orders"><code class="docutils literal notranslate"><span class="pre">OrdersWindow.filter_orders()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.OrdersWindow.load_orders"><code class="docutils literal notranslate"><span class="pre">OrdersWindow.load_orders()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.OrdersWindow.on_double_click"><code class="docutils literal notranslate"><span class="pre">OrdersWindow.on_double_click()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.OrdersWindow.save_order"><code class="docutils literal notranslate"><span class="pre">OrdersWindow.save_order()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.OrdersWindow.sort_by"><code class="docutils literal notranslate"><span class="pre">OrdersWindow.sort_by()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#gui.ProductsWindow"><code class="docutils literal notranslate"><span class="pre">ProductsWindow</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ProductsWindow.clear_fields"><code class="docutils literal notranslate"><span class="pre">ProductsWindow.clear_fields()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ProductsWindow.delete_product"><code class="docutils literal notranslate"><span class="pre">ProductsWindow.delete_product()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ProductsWindow.display_products"><code class="docutils literal notranslate"><span class="pre">ProductsWindow.display_products()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ProductsWindow.export_to_csv"><code class="docutils literal notranslate"><span class="pre">ProductsWindow.export_to_csv()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ProductsWindow.filter_products"><code class="docutils literal notranslate"><span class="pre">ProductsWindow.filter_products()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ProductsWindow.load_products"><code class="docutils literal notranslate"><span class="pre">ProductsWindow.load_products()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ProductsWindow.on_double_click"><code class="docutils literal notranslate"><span class="pre">ProductsWindow.on_double_click()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ProductsWindow.save_product"><code class="docutils literal notranslate"><span class="pre">ProductsWindow.save_product()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.ProductsWindow.sort_by"><code class="docutils literal notranslate"><span class="pre">ProductsWindow.sort_by()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#gui.StatsWindow"><code class="docutils literal notranslate"><span class="pre">StatsWindow</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#gui.StatsWindow.clear_chart"><code class="docutils literal notranslate"><span class="pre">StatsWindow.clear_chart()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.StatsWindow.show_clients_products_graph"><code class="docutils literal notranslate"><span class="pre">StatsWindow.show_clients_products_graph()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.StatsWindow.show_orders_trend"><code class="docutils literal notranslate"><span class="pre">StatsWindow.show_orders_trend()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#gui.StatsWindow.show_top_5_clients"><code class="docutils literal notranslate"><span class="pre">StatsWindow.show_top_5_clients()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#models.Client"><code class="docutils literal notranslate"><span class="pre">Client</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#models.Client.is_valid_email"><code class="docutils literal notranslate"><span class="pre">Client.is_valid_email()</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#models.Client.is_valid_phone"><code class="docutils literal notranslate"><span class="pre">Client.is_valid_phone()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#models.Order"><code class="docutils literal notranslate"><span class="pre">Order</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#models.Product"><code class="docutils literal notranslate"><span class="pre">Product</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#models.Product.price"><code class="docutils literal notranslate"><span class="pre">Product.price</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#models.Product.stock"><code class="docutils literal notranslate"><span class="pre">Product.stock</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Интернет магазин</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Модули</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/modules.rst.txt" rel="nofollow"> Просмотреть исходный код страницы</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="module-test_models">
+<span id="id1"></span><h1>Модули<a class="headerlink" href="#module-test_models" title="Ссылка на этот заголовок"></a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="test_models.TestClient">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">test_models.</span></span><span class="sig-name descname"><span class="pre">TestClient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestClient"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestClient" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<p>Набор тестов для класса Client.
+Проверяет корректность создания объекта, валидацию email и телефона,
+а также правильность строкового представления.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestClient.test_client_creation">
+<span class="sig-name descname"><span class="pre">test_client_creation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestClient.test_client_creation"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestClient.test_client_creation" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет корректное создание экземпляра Client с валидными данными.
+Убеждается, что все атрибуты (имя, email, телефон, адрес) установлены верно.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestClient.test_invalid_email_raises_error_on_init">
+<span class="sig-name descname"><span class="pre">test_invalid_email_raises_error_on_init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestClient.test_invalid_email_raises_error_on_init"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestClient.test_invalid_email_raises_error_on_init" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, что при создании клиента с некорректным email выбрасывается ValueError.
+Ожидается исключение при передаче строки, не соответствующей формату email.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestClient.test_invalid_phone_raises_error_on_init">
+<span class="sig-name descname"><span class="pre">test_invalid_phone_raises_error_on_init</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestClient.test_invalid_phone_raises_error_on_init"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestClient.test_invalid_phone_raises_error_on_init" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, что при создании клиента с некорректным телефоном выбрасывается ValueError.
+Ожидается исключение при передаче строки, не соответствующей формату телефона.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestClient.test_str_method">
+<span class="sig-name descname"><span class="pre">test_str_method</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestClient.test_str_method"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestClient.test_str_method" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет корректность строкового представления объекта Client.
+Убеждается, что метод __str__ возвращает строку в ожидаемом формате.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestClient.test_valid_email">
+<span class="sig-name descname"><span class="pre">test_valid_email</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestClient.test_valid_email"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestClient.test_valid_email" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, что корректный email проходит валидацию.
+Убеждается, что метод is_valid_email() возвращает True для валидного email.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestClient.test_valid_phone">
+<span class="sig-name descname"><span class="pre">test_valid_phone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestClient.test_valid_phone"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestClient.test_valid_phone" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, что корректный номер телефона проходит валидацию.
+Убеждается, что метод is_valid_phone() возвращает True для номера в формате +7 или 8.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="test_models.TestOrder">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">test_models.</span></span><span class="sig-name descname"><span class="pre">TestOrder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestOrder"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestOrder" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<p>Набор тестов для класса Order.
+Проверяет корректность создания заказа, валидацию полей (ID, количество),
+типов данных и правильность строкового представления.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestOrder.test_order_client_id_non_int">
+<span class="sig-name descname"><span class="pre">test_order_client_id_non_int</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestOrder.test_order_client_id_non_int"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestOrder.test_order_client_id_non_int" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, что client_id должен быть целым числом.
+Ожидается TypeError при передаче строки вместо int.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestOrder.test_order_creation">
+<span class="sig-name descname"><span class="pre">test_order_creation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestOrder.test_order_creation"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestOrder.test_order_creation" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет корректное создание экземпляра Order с валидными данными.
+Убеждается, что все атрибуты (client_id, product_id, quantity, order_date) установлены верно.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestOrder.test_order_product_id_non_int">
+<span class="sig-name descname"><span class="pre">test_order_product_id_non_int</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestOrder.test_order_product_id_non_int"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestOrder.test_order_product_id_non_int" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, что product_id должен быть целым числом.
+Ожидается TypeError при передаче строки вместо int.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestOrder.test_order_quantity_negative">
+<span class="sig-name descname"><span class="pre">test_order_quantity_negative</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestOrder.test_order_quantity_negative"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestOrder.test_order_quantity_negative" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, что количество товара не может быть отрицательным.
+Ожидается ValueError при передаче отрицательного значения.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestOrder.test_order_quantity_non_int">
+<span class="sig-name descname"><span class="pre">test_order_quantity_non_int</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestOrder.test_order_quantity_non_int"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestOrder.test_order_quantity_non_int" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, что quantity должен быть целым числом.
+Ожидается TypeError при передаче float вместо int.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestOrder.test_order_quantity_positive">
+<span class="sig-name descname"><span class="pre">test_order_quantity_positive</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestOrder.test_order_quantity_positive"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestOrder.test_order_quantity_positive" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, что количество товара может быть положительным целым числом.
+Убеждается, что quantity = 1 допустимо.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestOrder.test_order_quantity_zero">
+<span class="sig-name descname"><span class="pre">test_order_quantity_zero</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestOrder.test_order_quantity_zero"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestOrder.test_order_quantity_zero" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, что количество товара не может быть равно нулю.
+Ожидается ValueError при передаче quantity = 0.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestOrder.test_str_method">
+<span class="sig-name descname"><span class="pre">test_str_method</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestOrder.test_str_method"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestOrder.test_str_method" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет корректность строкового представления объекта Order.
+Убеждается, что метод __str__ возвращает строку в ожидаемом формате.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="test_models.TestProduct">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">test_models.</span></span><span class="sig-name descname"><span class="pre">TestProduct</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">methodName</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'runTest'</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestProduct"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestProduct" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">TestCase</span></code></p>
+<p>Набор тестов для класса Product.
+Проверяет корректность создания объекта, работу сеттеров для price и stock,
+валидацию значений и правильность строкового представления.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestProduct.test_price_setter_negative">
+<span class="sig-name descname"><span class="pre">test_price_setter_negative</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestProduct.test_price_setter_negative"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestProduct.test_price_setter_negative" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, что попытка установить отрицательную цену вызывает ValueError.
+Ожидается исключение при создании товара с отрицательной ценой.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestProduct.test_price_setter_non_numeric">
+<span class="sig-name descname"><span class="pre">test_price_setter_non_numeric</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestProduct.test_price_setter_non_numeric"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestProduct.test_price_setter_non_numeric" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, что попытка установить нечисловую цену вызывает TypeError.
+Ожидается исключение при передаче строки вместо числа.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestProduct.test_price_setter_valid">
+<span class="sig-name descname"><span class="pre">test_price_setter_valid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestProduct.test_price_setter_valid"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestProduct.test_price_setter_valid" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, что сеттер цены корректно устанавливает новое значение.
+Убеждается, что price можно изменить на положительное число.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestProduct.test_product_creation">
+<span class="sig-name descname"><span class="pre">test_product_creation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestProduct.test_product_creation"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestProduct.test_product_creation" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет корректное создание экземпляра Product с валидными данными.
+Убеждается, что атрибуты name, price и stock установлены верно.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestProduct.test_stock_setter_negative">
+<span class="sig-name descname"><span class="pre">test_stock_setter_negative</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestProduct.test_stock_setter_negative"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestProduct.test_stock_setter_negative" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, что попытка установить отрицательное количество вызывает ValueError.
+Ожидается исключение при создании товара с отрицательным stock.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestProduct.test_stock_setter_non_integer">
+<span class="sig-name descname"><span class="pre">test_stock_setter_non_integer</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestProduct.test_stock_setter_non_integer"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestProduct.test_stock_setter_non_integer" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, что попытка установить нецелое количество вызывает TypeError.
+Ожидается исключение при передаче float или строки вместо int.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestProduct.test_stock_setter_valid">
+<span class="sig-name descname"><span class="pre">test_stock_setter_valid</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestProduct.test_stock_setter_valid"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestProduct.test_stock_setter_valid" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, что сеттер количества корректно устанавливает новое значение.
+Убеждается, что stock можно изменить на неотрицательное целое число.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="test_models.TestProduct.test_str_method">
+<span class="sig-name descname"><span class="pre">test_str_method</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/test_models.html#TestProduct.test_str_method"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#test_models.TestProduct.test_str_method" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет корректность строкового представления объекта Product.
+Убеждается, что метод __str__ возвращает строку в ожидаемом формате.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class" id="module-gui">
+<dt class="sig sig-object py" id="gui.ClientsWindow">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gui.</span></span><span class="sig-name descname"><span class="pre">ClientsWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ClientsWindow"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ClientsWindow" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Окно управления клиентами интернет-магазина.
+Позволяет просматривать, добавлять, редактировать, удалять и искать клиентов.
+Поддерживает сортировку по столбцам, экспорт в CSV и live-поиск по введённому тексту.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ClientsWindow.clear_fields">
+<span class="sig-name descname"><span class="pre">clear_fields</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ClientsWindow.clear_fields"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ClientsWindow.clear_fields" title="Ссылка на это определение"></a></dt>
+<dd><p>Очищает поля формы ввода и сбрасывает режим редактирования.
+Устанавливает кнопку «Сохранить» и сбрасывает <cite>current_client_id</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ClientsWindow.delete_client">
+<span class="sig-name descname"><span class="pre">delete_client</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ClientsWindow.delete_client"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ClientsWindow.delete_client" title="Ссылка на это определение"></a></dt>
+<dd><p>Удаляет выбранного клиента после подтверждения.
+Если клиент не выбран — выводит предупреждение. При подтверждении удаляет
+запись через <cite>Database.delete_client()</cite> и обновляет таблицу.
+:raises Показывает сообщение об ошибке при неудаче.:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ClientsWindow.display_clients">
+<span class="sig-name descname"><span class="pre">display_clients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">clients</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ClientsWindow.display_clients"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ClientsWindow.display_clients" title="Ссылка на это определение"></a></dt>
+<dd><p>Отображает список клиентов в виджете Treeview.
+Перед отображением очищает текущую таблицу.
+:param clients: Список кортежей с данными клиентов (ID, Имя, Email, Телефон, Адрес).
+:type clients: list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ClientsWindow.export_to_csv">
+<span class="sig-name descname"><span class="pre">export_to_csv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ClientsWindow.export_to_csv"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ClientsWindow.export_to_csv" title="Ссылка на это определение"></a></dt>
+<dd><p>Экспортирует список всех клиентов в CSV-файл.
+Открывает диалог выбора места сохранения. Если данных нет — уведомляет об этом.
+В случае успеха — показывает имя сохранённого файла.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ClientsWindow.filter_clients">
+<span class="sig-name descname"><span class="pre">filter_clients</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ClientsWindow.filter_clients"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ClientsWindow.filter_clients" title="Ссылка на это определение"></a></dt>
+<dd><p>Фильтрует клиентов по введённому в поле поиска тексту.
+Поиск производится по всем полям (регистронезависимо). При пустом запросе
+отображаются все клиенты.
+:param *args: Игнорируемые аргументы.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ClientsWindow.load_clients">
+<span class="sig-name descname"><span class="pre">load_clients</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ClientsWindow.load_clients"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ClientsWindow.load_clients" title="Ссылка на это определение"></a></dt>
+<dd><p>Загружает всех клиентов из базы данных.
+Получает данные из <cite>Database.load_client()</cite> и сохраняет в <cite>self.all_clients</cite>.
+В случае ошибки выводит сообщение об ошибке.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ClientsWindow.on_double_click">
+<span class="sig-name descname"><span class="pre">on_double_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ClientsWindow.on_double_click"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ClientsWindow.on_double_click" title="Ссылка на это определение"></a></dt>
+<dd><p>Обрабатывает двойной клик по строке таблицы — заполняет форму данными клиента.
+Устанавливает режим редактирования и активирует кнопку «Обновить».
+:param event: Событие двойного клика.
+:type event: tk.Event</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ClientsWindow.save_client">
+<span class="sig-name descname"><span class="pre">save_client</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ClientsWindow.save_client"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ClientsWindow.save_client" title="Ссылка на это определение"></a></dt>
+<dd><p>Сохраняет клиента в базу данных — добавляет нового или обновляет существующего.
+Если <cite>current_client_id</cite> не задан — добавляет нового клиента.
+Иначе — обновляет данные по существующему ID. После сохранения очищает форму
+и перезагружает таблицу.
+Показывает уведомление об успехе или ошибке.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ClientsWindow.sort_by">
+<span class="sig-name descname"><span class="pre">sort_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ClientsWindow.sort_by"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ClientsWindow.sort_by" title="Ссылка на это определение"></a></dt>
+<dd><p>Сортирует строки таблицы по выбранному столбцу.
+При повторном нажатии меняет порядок сортировки (по возрастанию/убыванию).
+:param col: Название столбца, по которому нужно отсортировать.
+:type col: str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="gui.MainApp">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gui.</span></span><span class="sig-name descname"><span class="pre">MainApp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">root</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#MainApp"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.MainApp" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Главное окно приложения для управления интернет-магазином.
+Класс создаёт графический интерфейс с пятью основными кнопками:
+Клиенты, Товары, Заказы, Статистика и Выход. Каждая кнопка открывает
+соответствующее окно для выполнения операций с данными или просмотра статистики.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.MainApp.exit_app">
+<span class="sig-name descname"><span class="pre">exit_app</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#MainApp.exit_app"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.MainApp.exit_app" title="Ссылка на это определение"></a></dt>
+<dd><p>Завершает работу приложения с подтверждением.
+Показывает диалоговое окно с вопросом о подтверждении выхода.
+Если пользователь подтверждает — приложение закрывается.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.MainApp.open_clients_window">
+<span class="sig-name descname"><span class="pre">open_clients_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#MainApp.open_clients_window"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.MainApp.open_clients_window" title="Ссылка на это определение"></a></dt>
+<dd><p>Открывает окно управления клиентами.
+Создаёт новое окно (Toplevel), в котором можно добавлять, удалять,
+редактировать и искать клиентов.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.MainApp.open_orders_window">
+<span class="sig-name descname"><span class="pre">open_orders_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#MainApp.open_orders_window"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.MainApp.open_orders_window" title="Ссылка на это определение"></a></dt>
+<dd><p>Открывает окно управления заказами.
+Создаёт новое окно (Toplevel), в котором можно добавлять, удалять,
+редактировать и искать заказы.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.MainApp.open_products_window">
+<span class="sig-name descname"><span class="pre">open_products_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#MainApp.open_products_window"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.MainApp.open_products_window" title="Ссылка на это определение"></a></dt>
+<dd><p>Открывает окно управления товарами.
+Создаёт новое окно (Toplevel), в котором можно добавлять, удалять,
+редактировать и искать товары.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.MainApp.open_stats_window">
+<span class="sig-name descname"><span class="pre">open_stats_window</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#MainApp.open_stats_window"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.MainApp.open_stats_window" title="Ссылка на это определение"></a></dt>
+<dd><p>Открывает окно статистики.
+Создаёт новое окно (Toplevel), в котором отображается различная
+аналитическая информация по интернет-магазину.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="gui.OrdersWindow">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gui.</span></span><span class="sig-name descname"><span class="pre">OrdersWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#OrdersWindow"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.OrdersWindow" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Окно управления заказами интернет-магазина.
+Позволяет добавлять, просматривать, редактировать, удалять и искать заказы.
+Поддерживает выбор клиента и товара из выпадающих списков, ввод количества,
+даты заказа, а также экспорт данных в CSV.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.OrdersWindow.clear_fields">
+<span class="sig-name descname"><span class="pre">clear_fields</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#OrdersWindow.clear_fields"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.OrdersWindow.clear_fields" title="Ссылка на это определение"></a></dt>
+<dd><p>Очищает все поля формы и сбрасывает режим редактирования.
+Устанавливает кнопку «Сохранить» и обнуляет <cite>current_order_id</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.OrdersWindow.delete_order">
+<span class="sig-name descname"><span class="pre">delete_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#OrdersWindow.delete_order"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.OrdersWindow.delete_order" title="Ссылка на это определение"></a></dt>
+<dd><p>Удаляет выбранный заказ после подтверждения.
+Если строка не выбрана — выводит предупреждение. При подтверждении удаляет
+запись через <cite>self.db.delete_order()</cite> и обновляет таблицу.
+:raises Показывает сообщение об ошибке при неудаче.:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.OrdersWindow.display_orders">
+<span class="sig-name descname"><span class="pre">display_orders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">orders</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#OrdersWindow.display_orders"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.OrdersWindow.display_orders" title="Ссылка на это определение"></a></dt>
+<dd><p>Отображает список заказов в Treeview.</p>
+<p>Очищает текущую таблицу и добавляет новые строки.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Параметры<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>orders</strong> (<em>list</em>) – Список кортежей с данными заказов (ID, Клиент, Товар, Кол-во, Дата).</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.OrdersWindow.export_to_csv">
+<span class="sig-name descname"><span class="pre">export_to_csv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#OrdersWindow.export_to_csv"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.OrdersWindow.export_to_csv" title="Ссылка на это определение"></a></dt>
+<dd><p>Экспортирует список всех заказов в CSV-файл.
+Открывает диалог сохранения. Если данных нет — уведомляет об этом.
+В случае успеха — показывает имя сохранённого файла.
+:raises Показывает сообщение об ошибке при проблеме с записью файла.:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.OrdersWindow.filter_orders">
+<span class="sig-name descname"><span class="pre">filter_orders</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#OrdersWindow.filter_orders"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.OrdersWindow.filter_orders" title="Ссылка на это определение"></a></dt>
+<dd><p>Фильтрует заказы по тексту из поля поиска (регистронезависимо).
+Поиск ведётся по всем полям. При пустом запросе отображаются все заказы.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.OrdersWindow.load_orders">
+<span class="sig-name descname"><span class="pre">load_orders</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#OrdersWindow.load_orders"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.OrdersWindow.load_orders" title="Ссылка на это определение"></a></dt>
+<dd><p>Загружает все заказы из базы данных.</p>
+<p>Вызывает <cite>self.db.load_order()</cite> и сохраняет результат в <cite>self.all_orders</cite>.
+Отображает данные в таблице. При ошибке показывает сообщение.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.OrdersWindow.on_double_click">
+<span class="sig-name descname"><span class="pre">on_double_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#OrdersWindow.on_double_click"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.OrdersWindow.on_double_click" title="Ссылка на это определение"></a></dt>
+<dd><p>Обрабатывает двойной клик — заполняет форму данными выбранного заказа.
+Активирует режим редактирования и меняет текст кнопки на «Обновить».
+:param event: Событие двойного клика.
+:type event: tk.Event</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.OrdersWindow.save_order">
+<span class="sig-name descname"><span class="pre">save_order</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#OrdersWindow.save_order"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.OrdersWindow.save_order" title="Ссылка на это определение"></a></dt>
+<dd><p>Сохраняет заказ в базу данных (добавление или обновление).
+Проверяет корректность ввода: клиент и товар выбраны, количество — положительное число.
+Если <cite>current_order_id</cite> не задан — добавляет новый заказ. Иначе — обновляет существующий.
+:raises Показывает сообщение об ошибке при неверных данных или проблемах с БД.:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.OrdersWindow.sort_by">
+<span class="sig-name descname"><span class="pre">sort_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#OrdersWindow.sort_by"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.OrdersWindow.sort_by" title="Ссылка на это определение"></a></dt>
+<dd><p>Сортирует строки таблицы по выбранному столбцу.
+При повторном клике меняет направление сортировки (по возрастанию/убыванию).
+:param col: Название столбца для сортировки.
+:type col: str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="gui.ProductsWindow">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gui.</span></span><span class="sig-name descname"><span class="pre">ProductsWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ProductsWindow"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ProductsWindow" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Окно управления товарами интернет-магазина.
+Позволяет просматривать, добавлять, редактировать, удалять и искать товары.
+Поддерживает live-поиск, сортировку по столбцам, экспорт в CSV и редактирование
+по двойному клику на строке таблицы.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ProductsWindow.clear_fields">
+<span class="sig-name descname"><span class="pre">clear_fields</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ProductsWindow.clear_fields"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ProductsWindow.clear_fields" title="Ссылка на это определение"></a></dt>
+<dd><p>Очищает поля формы и сбрасывает режим редактирования.
+Устанавливает кнопку «Сохранить» и обнуляет <cite>current_product_id</cite>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ProductsWindow.delete_product">
+<span class="sig-name descname"><span class="pre">delete_product</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ProductsWindow.delete_product"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ProductsWindow.delete_product" title="Ссылка на это определение"></a></dt>
+<dd><p>Удаляет выбранный товар после подтверждения.
+Если строка не выбрана — выводит предупреждение. При подтверждении удаляет
+запись через <cite>Database.delete_product()</cite> и обновляет таблицу.
+:raises Показывает сообщение об ошибке в случае неудачи.:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ProductsWindow.display_products">
+<span class="sig-name descname"><span class="pre">display_products</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">products</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ProductsWindow.display_products"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ProductsWindow.display_products" title="Ссылка на это определение"></a></dt>
+<dd><p>Отображает список товаров в виджете Treeview.
+Перед отображением очищает текущую таблицу.
+:param products: Список кортежей с данными товаров (ID, Наименование, Цена, Количество).
+:type products: list</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ProductsWindow.export_to_csv">
+<span class="sig-name descname"><span class="pre">export_to_csv</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ProductsWindow.export_to_csv"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ProductsWindow.export_to_csv" title="Ссылка на это определение"></a></dt>
+<dd><p>Экспортирует список всех товаров в CSV-файл.
+Открывает диалог сохранения. Если данных нет — уведомляет об этом.
+В случае успеха — показывает имя сохранённого файла.
+:raises Показывает сообщение об ошибке при проблеме с записью файла.:</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ProductsWindow.filter_products">
+<span class="sig-name descname"><span class="pre">filter_products</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ProductsWindow.filter_products"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ProductsWindow.filter_products" title="Ссылка на это определение"></a></dt>
+<dd><p>Фильтрует товары по тексту из поля поиска (регистронезависимо).
+При пустом запросе отображаются все товары. Поиск ведётся по всем полям.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ProductsWindow.load_products">
+<span class="sig-name descname"><span class="pre">load_products</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ProductsWindow.load_products"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ProductsWindow.load_products" title="Ссылка на это определение"></a></dt>
+<dd><p>Загружает все товары из базы данных.
+Вызывает метод <cite>Database.load_product()</cite>, сохраняет результат в <cite>self.all_products</cite>
+и отображает данные в таблице. В случае ошибки показывает сообщение.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ProductsWindow.on_double_click">
+<span class="sig-name descname"><span class="pre">on_double_click</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">event</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ProductsWindow.on_double_click"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ProductsWindow.on_double_click" title="Ссылка на это определение"></a></dt>
+<dd><p>Обрабатывает двойной клик по строке — заполняет форму данными товара.
+Активирует режим редактирования и меняет текст кнопки на «Обновить».
+:param event: Событие двойного клика.
+:type event: tk.Event</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ProductsWindow.save_product">
+<span class="sig-name descname"><span class="pre">save_product</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ProductsWindow.save_product"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ProductsWindow.save_product" title="Ссылка на это определение"></a></dt>
+<dd><p>Сохраняет товар в базу данных — добавляет новый или обновляет существующий.
+Если <cite>current_product_id</cite> не задан — добавляет товар.
+Иначе — обновляет данные по ID. После сохранения очищает форму,
+перезагружает таблицу и применяет текущий фильтр.
+Показывает уведомление об успехе или ошибке.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.ProductsWindow.sort_by">
+<span class="sig-name descname"><span class="pre">sort_by</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">col</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#ProductsWindow.sort_by"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.ProductsWindow.sort_by" title="Ссылка на это определение"></a></dt>
+<dd><p>Сортирует строки таблицы по выбранному столбцу.
+При повторном нажатии меняет направление сортировки (по возрастанию/убыванию).
+:param col: Название столбца, по которому выполняется сортировка.
+:type col: str</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="gui.StatsWindow">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">gui.</span></span><span class="sig-name descname"><span class="pre">StatsWindow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">window</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#StatsWindow"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.StatsWindow" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Окно отображения статистики интернет-магазина.
+Предоставляет графики: топ-5 клиентов, динамику заказов по датам и граф связей клиентов и товаров.
+Графики отображаются встроенными в Tkinter с помощью Matplotlib.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.StatsWindow.clear_chart">
+<span class="sig-name descname"><span class="pre">clear_chart</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#StatsWindow.clear_chart"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.StatsWindow.clear_chart" title="Ссылка на это определение"></a></dt>
+<dd><p>Удаляет текущий график из интерфейса, если он существует.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.StatsWindow.show_clients_products_graph">
+<span class="sig-name descname"><span class="pre">show_clients_products_graph</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#StatsWindow.show_clients_products_graph"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.StatsWindow.show_clients_products_graph" title="Ссылка на это определение"></a></dt>
+<dd><p>Отображает граф связей между клиентами и товарами.
+Каждый клиент и товар — узел. Ребро — заказ. Клиенты отображаются синими,
+товары — зелёными. Используется NetworkX и Matplotlib.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.StatsWindow.show_orders_trend">
+<span class="sig-name descname"><span class="pre">show_orders_trend</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#StatsWindow.show_orders_trend"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.StatsWindow.show_orders_trend" title="Ссылка на это определение"></a></dt>
+<dd><p>Отображает линейный график динамики заказов по датам.
+Получает данные из <cite>self.db.show_order_trend()</cite> и строит график с точками.
+Ось X — даты, ось Y — количество заказов.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="gui.StatsWindow.show_top_5_clients">
+<span class="sig-name descname"><span class="pre">show_top_5_clients</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="reference internal" href="_modules/gui.html#StatsWindow.show_top_5_clients"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#gui.StatsWindow.show_top_5_clients" title="Ссылка на это определение"></a></dt>
+<dd><p>Отображает горизонтальную столбчатую диаграмму топ-5 клиентов по количеству заказов.
+Получает данные из <cite>Database.top_5_client()</cite> и строит график с помощью Matplotlib.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class" id="module-models">
+<dt class="sig sig-object py" id="models.Client">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.</span></span><span class="sig-name descname"><span class="pre">Client</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">email</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">phone</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">address</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models.html#Client"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#models.Client" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Класс, представляющий клиента интернет-магазина.
+Содержит данные о клиенте: имя, email, телефон и адрес.
+При создании объекта автоматически выполняется валидация полей.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="models.Client.is_valid_email">
+<span class="sig-name descname"><span class="pre">is_valid_email</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/models.html#Client.is_valid_email"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#models.Client.is_valid_email" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, соответствует ли email клиента стандартному формату.
+Используется регулярное выражение для валидации:
+- локальная часть: буквы, цифры, точки, подчёркивания и т.д.
+- домен: должен содержать точку и минимум 2 символа в домене верхнего уровня.
+:returns: True, если email валиден, иначе False.
+:rtype: bool</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="models.Client.is_valid_phone">
+<span class="sig-name descname"><span class="pre">is_valid_phone</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="reference internal" href="_modules/models.html#Client.is_valid_phone"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#models.Client.is_valid_phone" title="Ссылка на это определение"></a></dt>
+<dd><p>Проверяет, соответствует ли номер телефона формату +7XXXXXXXXXX или 8XXXXXXXXXX.
+Номер должен содержать ровно 11 цифр после +7 или 8.
+:returns: True, если номер валиден, иначе False.
+:rtype: bool</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="models.Order">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.</span></span><span class="sig-name descname"><span class="pre">Order</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">client_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">product_id</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">quantity</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">order_date</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models.html#Order"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#models.Order" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Класс, представляющий заказ в интернет-магазине.
+Связывает клиента и товар по их ID, содержит количество и дату заказа.
+Все входные данные проверяются на корректность при создании.</p>
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="models.Product">
+<em class="property"><span class="k"><span class="pre">class</span></span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">models.</span></span><span class="sig-name descname"><span class="pre">Product</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">price</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">stock</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/models.html#Product"><span class="viewcode-link"><span class="pre">[исходный</span> <span class="pre">код]</span></span></a><a class="headerlink" href="#models.Product" title="Ссылка на это определение"></a></dt>
+<dd><p>Базовые классы: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Класс, представляющий товар в интернет-магазине.
+Содержит название, цену и количество на складе. Валидация данных выполняется через property-сеттеры.</p>
+<dl class="py property">
+<dt class="sig sig-object py" id="models.Product.price">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">price</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">float</span></em><a class="headerlink" href="#models.Product.price" title="Ссылка на это определение"></a></dt>
+<dd><p>Возвращает цену товара.
+:returns: Текущая цена товара.
+:rtype: float</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="models.Product.stock">
+<em class="property"><span class="k"><span class="pre">property</span></span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">stock</span></span><em class="property"><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="pre">int</span></em><a class="headerlink" href="#models.Product.stock" title="Ссылка на это определение"></a></dt>
+<dd><p>Возвращает количество товара на складе.
+:returns: Текущее количество.
+:rtype: int</p>
+</dd></dl>
+
+</dd></dl>
+
+<span class="target" id="module-main"></span></section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Нижняя область">
+        <a href="index.html" class="btn btn-neutral float-left" title="Добро пожаловать в документацию интернет-магазина!" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Предыдущая</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2025, Бобков Константин. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

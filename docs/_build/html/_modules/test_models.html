@@ -1,0 +1,392 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="ru" data-content_root="../">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>test_models &mdash; Документация интернет-магазина</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=e59714d7" />
+
+  
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=9ca2116e"></script>
+      <script src="../_static/doctools.js?v=9bcbadda"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script src="../_static/translations.js?v=cd1d70c9"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Алфавитный указатель" href="../genindex.html" />
+    <link rel="search" title="Поиск" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html" class="icon icon-home">
+            Интернет магазин
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Поиск в документации" aria-label="Поиск в документации" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Меню навигации">
+              <p class="caption" role="heading"><span class="caption-text">Содержание:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../modules.html">Модули</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Меню навигации для мобильных устройств" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">Интернет магазин</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Навигация по страницам">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+          <li class="breadcrumb-item"><a href="index.html">Код модуля</a></li>
+      <li class="breadcrumb-item active">test_models</li>
+      <li class="wy-breadcrumbs-aside">
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <h1>Исходный код test_models</h1><div class="highlight"><pre>
+<span></span><span class="kn">import</span><span class="w"> </span><span class="nn">unittest</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">models</span><span class="w"> </span><span class="kn">import</span> <span class="n">Client</span><span class="p">,</span> <span class="n">Product</span><span class="p">,</span> <span class="n">Order</span>
+
+
+<div class="viewcode-block" id="TestClient">
+<a class="viewcode-back" href="../modules.html#test_models.TestClient">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TestClient</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Набор тестов для класса Client.</span>
+<span class="sd">    Проверяет корректность создания объекта, валидацию email и телефона,</span>
+<span class="sd">    а также правильность строкового представления.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TestClient.test_client_creation">
+<a class="viewcode-back" href="../modules.html#test_models.TestClient.test_client_creation">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_client_creation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет корректное создание экземпляра Client с валидными данными.</span>
+<span class="sd">        Убеждается, что все атрибуты (имя, email, телефон, адрес) установлены верно.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;Иван Иванов&quot;</span><span class="p">,</span> <span class="s2">&quot;ivan@ivanov.com&quot;</span><span class="p">,</span> <span class="s2">&quot;81234567890&quot;</span><span class="p">,</span> <span class="s2">&quot;Москва&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;Иван Иванов&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">email</span><span class="p">,</span> <span class="s2">&quot;ivan@ivanov.com&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">phone</span><span class="p">,</span> <span class="s2">&quot;81234567890&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">address</span><span class="p">,</span> <span class="s2">&quot;Москва&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestClient.test_valid_email">
+<a class="viewcode-back" href="../modules.html#test_models.TestClient.test_valid_email">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_valid_email</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, что корректный email проходит валидацию.</span>
+<span class="sd">        Убеждается, что метод is_valid_email() возвращает True для валидного email.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;Иван&quot;</span><span class="p">,</span> <span class="s2">&quot;ivan@ivanov.com&quot;</span><span class="p">,</span> <span class="s2">&quot;81234567890&quot;</span><span class="p">,</span> <span class="s2">&quot;Москва&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">is_valid_email</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="TestClient.test_invalid_email_raises_error_on_init">
+<a class="viewcode-back" href="../modules.html#test_models.TestClient.test_invalid_email_raises_error_on_init">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_invalid_email_raises_error_on_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, что при создании клиента с некорректным email выбрасывается ValueError.</span>
+<span class="sd">        Ожидается исключение при передаче строки, не соответствующей формату email.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;Иван&quot;</span><span class="p">,</span> <span class="s2">&quot;invalid-email&quot;</span><span class="p">,</span> <span class="s2">&quot;81234567890&quot;</span><span class="p">,</span> <span class="s2">&quot;Москва&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestClient.test_valid_phone">
+<a class="viewcode-back" href="../modules.html#test_models.TestClient.test_valid_phone">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_valid_phone</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, что корректный номер телефона проходит валидацию.</span>
+<span class="sd">        Убеждается, что метод is_valid_phone() возвращает True для номера в формате +7 или 8.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;Иван&quot;</span><span class="p">,</span> <span class="s2">&quot;ivan@ivanov.com&quot;</span><span class="p">,</span> <span class="s2">&quot;81234567890&quot;</span><span class="p">,</span> <span class="s2">&quot;Москва&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertTrue</span><span class="p">(</span><span class="n">client</span><span class="o">.</span><span class="n">is_valid_phone</span><span class="p">())</span></div>
+
+
+<div class="viewcode-block" id="TestClient.test_invalid_phone_raises_error_on_init">
+<a class="viewcode-back" href="../modules.html#test_models.TestClient.test_invalid_phone_raises_error_on_init">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_invalid_phone_raises_error_on_init</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, что при создании клиента с некорректным телефоном выбрасывается ValueError.</span>
+<span class="sd">        Ожидается исключение при передаче строки, не соответствующей формату телефона.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;Иван&quot;</span><span class="p">,</span> <span class="s2">&quot;ivan@ivanov.com&quot;</span><span class="p">,</span> <span class="s2">&quot;abc&quot;</span><span class="p">,</span> <span class="s2">&quot;Москва&quot;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestClient.test_str_method">
+<a class="viewcode-back" href="../modules.html#test_models.TestClient.test_str_method">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_str_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет корректность строкового представления объекта Client.</span>
+<span class="sd">        Убеждается, что метод __str__ возвращает строку в ожидаемом формате.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">client</span> <span class="o">=</span> <span class="n">Client</span><span class="p">(</span><span class="s2">&quot;Иван&quot;</span><span class="p">,</span> <span class="s2">&quot;ivan@ivanov.com&quot;</span><span class="p">,</span> <span class="s2">&quot;81234567890&quot;</span><span class="p">,</span> <span class="s2">&quot;Москва&quot;</span><span class="p">)</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="s2">&quot;Client(name=&#39;Иван&#39;, email=&#39;ivan@ivanov.com&#39;, phone=&#39;81234567890&#39;, address=&#39;Москва&#39;)&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">client</span><span class="p">),</span> <span class="n">expected</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TestProduct">
+<a class="viewcode-back" href="../modules.html#test_models.TestProduct">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TestProduct</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Набор тестов для класса Product.</span>
+<span class="sd">    Проверяет корректность создания объекта, работу сеттеров для price и stock,</span>
+<span class="sd">    валидацию значений и правильность строкового представления.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TestProduct.test_product_creation">
+<a class="viewcode-back" href="../modules.html#test_models.TestProduct.test_product_creation">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_product_creation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет корректное создание экземпляра Product с валидными данными.</span>
+<span class="sd">        Убеждается, что атрибуты name, price и stock установлены верно.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="p">(</span><span class="s2">&quot;Ноутбук&quot;</span><span class="p">,</span> <span class="mf">50000.0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="s2">&quot;Ноутбук&quot;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">price</span><span class="p">,</span> <span class="mf">50000.0</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">stock</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestProduct.test_price_setter_valid">
+<a class="viewcode-back" href="../modules.html#test_models.TestProduct.test_price_setter_valid">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_price_setter_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, что сеттер цены корректно устанавливает новое значение.</span>
+<span class="sd">        Убеждается, что price можно изменить на положительное число.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="p">(</span><span class="s2">&quot;Телефон&quot;</span><span class="p">,</span> <span class="mi">30000</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">product</span><span class="o">.</span><span class="n">price</span> <span class="o">=</span> <span class="mi">35000</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">price</span><span class="p">,</span> <span class="mf">35000.0</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestProduct.test_price_setter_negative">
+<a class="viewcode-back" href="../modules.html#test_models.TestProduct.test_price_setter_negative">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_price_setter_negative</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, что попытка установить отрицательную цену вызывает ValueError.</span>
+<span class="sd">        Ожидается исключение при создании товара с отрицательной ценой.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">Product</span><span class="p">(</span><span class="s2">&quot;Телефон&quot;</span><span class="p">,</span> <span class="o">-</span><span class="mi">100</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestProduct.test_price_setter_non_numeric">
+<a class="viewcode-back" href="../modules.html#test_models.TestProduct.test_price_setter_non_numeric">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_price_setter_non_numeric</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, что попытка установить нечисловую цену вызывает TypeError.</span>
+<span class="sd">        Ожидается исключение при передаче строки вместо числа.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+            <span class="n">Product</span><span class="p">(</span><span class="s2">&quot;Телефон&quot;</span><span class="p">,</span> <span class="s2">&quot;abc&quot;</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestProduct.test_stock_setter_valid">
+<a class="viewcode-back" href="../modules.html#test_models.TestProduct.test_stock_setter_valid">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_stock_setter_valid</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, что сеттер количества корректно устанавливает новое значение.</span>
+<span class="sd">        Убеждается, что stock можно изменить на неотрицательное целое число.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="p">(</span><span class="s2">&quot;Телефон&quot;</span><span class="p">,</span> <span class="mi">30000</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+        <span class="n">product</span><span class="o">.</span><span class="n">stock</span> <span class="o">=</span> <span class="mi">8</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">product</span><span class="o">.</span><span class="n">stock</span><span class="p">,</span> <span class="mi">8</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestProduct.test_stock_setter_negative">
+<a class="viewcode-back" href="../modules.html#test_models.TestProduct.test_stock_setter_negative">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_stock_setter_negative</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, что попытка установить отрицательное количество вызывает ValueError.</span>
+<span class="sd">        Ожидается исключение при создании товара с отрицательным stock.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">Product</span><span class="p">(</span><span class="s2">&quot;Телефон&quot;</span><span class="p">,</span> <span class="mi">30000</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestProduct.test_stock_setter_non_integer">
+<a class="viewcode-back" href="../modules.html#test_models.TestProduct.test_stock_setter_non_integer">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_stock_setter_non_integer</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, что попытка установить нецелое количество вызывает TypeError.</span>
+<span class="sd">        Ожидается исключение при передаче float или строки вместо int.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+            <span class="n">Product</span><span class="p">(</span><span class="s2">&quot;Телефон&quot;</span><span class="p">,</span> <span class="mi">30000</span><span class="p">,</span> <span class="mf">3.5</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestProduct.test_str_method">
+<a class="viewcode-back" href="../modules.html#test_models.TestProduct.test_str_method">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_str_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет корректность строкового представления объекта Product.</span>
+<span class="sd">        Убеждается, что метод __str__ возвращает строку в ожидаемом формате.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">Product</span><span class="p">(</span><span class="s2">&quot;Ноутбук&quot;</span><span class="p">,</span> <span class="mf">50000.0</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="s2">&quot;Product(name=&#39;Ноутбук&#39;, price=50000.0, stock=10)&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">product</span><span class="p">),</span> <span class="n">expected</span><span class="p">)</span></div>
+</div>
+
+
+
+<div class="viewcode-block" id="TestOrder">
+<a class="viewcode-back" href="../modules.html#test_models.TestOrder">[документация]</a>
+<span class="k">class</span><span class="w"> </span><span class="nc">TestOrder</span><span class="p">(</span><span class="n">unittest</span><span class="o">.</span><span class="n">TestCase</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Набор тестов для класса Order.</span>
+<span class="sd">    Проверяет корректность создания заказа, валидацию полей (ID, количество),</span>
+<span class="sd">    типов данных и правильность строкового представления.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="TestOrder.test_order_creation">
+<a class="viewcode-back" href="../modules.html#test_models.TestOrder.test_order_creation">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_order_creation</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет корректное создание экземпляра Order с валидными данными.</span>
+<span class="sd">        Убеждается, что все атрибуты (client_id, product_id, quantity, order_date) установлены верно.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;2025-08-22&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">client_id</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">product_id</span><span class="p">,</span> <span class="mi">101</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">quantity</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">order_date</span><span class="p">,</span> <span class="s1">&#39;2025-08-22&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestOrder.test_order_quantity_positive">
+<a class="viewcode-back" href="../modules.html#test_models.TestOrder.test_order_quantity_positive">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_order_quantity_positive</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, что количество товара может быть положительным целым числом.</span>
+<span class="sd">        Убеждается, что quantity = 1 допустимо.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;2025-08-22&#39;</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="n">order</span><span class="o">.</span><span class="n">quantity</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestOrder.test_order_quantity_zero">
+<a class="viewcode-back" href="../modules.html#test_models.TestOrder.test_order_quantity_zero">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_order_quantity_zero</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, что количество товара не может быть равно нулю.</span>
+<span class="sd">        Ожидается ValueError при передаче quantity = 0.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">Order</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="s1">&#39;2025-08-22&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestOrder.test_order_quantity_negative">
+<a class="viewcode-back" href="../modules.html#test_models.TestOrder.test_order_quantity_negative">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_order_quantity_negative</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, что количество товара не может быть отрицательным.</span>
+<span class="sd">        Ожидается ValueError при передаче отрицательного значения.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">ValueError</span><span class="p">):</span>
+            <span class="n">Order</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="s1">&#39;2025-08-22&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestOrder.test_order_client_id_non_int">
+<a class="viewcode-back" href="../modules.html#test_models.TestOrder.test_order_client_id_non_int">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_order_client_id_non_int</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, что client_id должен быть целым числом.</span>
+<span class="sd">        Ожидается TypeError при передаче строки вместо int.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+            <span class="n">Order</span><span class="p">(</span><span class="s2">&quot;1&quot;</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;2025-08-22&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestOrder.test_order_product_id_non_int">
+<a class="viewcode-back" href="../modules.html#test_models.TestOrder.test_order_product_id_non_int">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_order_product_id_non_int</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, что product_id должен быть целым числом.</span>
+<span class="sd">        Ожидается TypeError при передаче строки вместо int.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+            <span class="n">Order</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="s2">&quot;101&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="s1">&#39;2025-08-22&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestOrder.test_order_quantity_non_int">
+<a class="viewcode-back" href="../modules.html#test_models.TestOrder.test_order_quantity_non_int">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_order_quantity_non_int</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет, что quantity должен быть целым числом.</span>
+<span class="sd">        Ожидается TypeError при передаче float вместо int.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">with</span> <span class="bp">self</span><span class="o">.</span><span class="n">assertRaises</span><span class="p">(</span><span class="ne">TypeError</span><span class="p">):</span>
+            <span class="n">Order</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mf">2.5</span><span class="p">,</span> <span class="s1">&#39;2025-08-22&#39;</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="TestOrder.test_str_method">
+<a class="viewcode-back" href="../modules.html#test_models.TestOrder.test_str_method">[документация]</a>
+    <span class="k">def</span><span class="w"> </span><span class="nf">test_str_method</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Проверяет корректность строкового представления объекта Order.</span>
+<span class="sd">        Убеждается, что метод __str__ возвращает строку в ожидаемом формате.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">order</span> <span class="o">=</span> <span class="n">Order</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">101</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="s1">&#39;2025-08-22&#39;</span><span class="p">)</span>
+        <span class="n">expected</span> <span class="o">=</span> <span class="s2">&quot;Order(Client=1, Product=101, Quantity=3, Order_date=&#39;2025-08-22&#39;)&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">assertEqual</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">order</span><span class="p">),</span> <span class="n">expected</span><span class="p">)</span></div>
+</div>
+
+</pre></div>
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Авторские права 2025, Бобков Константин. </p>
+  </div>
+
+  Собрано при помощи <a href="https://www.sphinx-doc.org/">Sphinx</a> с использованием
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">темы,</a>
+    предоставленной <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
