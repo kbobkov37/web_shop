@@ -1,35 +1,32 @@
+from tkinter import Toplevel
 import tkinter as tk
+from tkinter import messagebox, filedialog
 from tkinter import ttk
+from tkinter import Frame, Label, Entry, Button, StringVar, LabelFrame, Scrollbar
+from tkcalendar import DateEntry
 import matplotlib.pyplot as plt
 from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
-
-from tkinter import messagebox, Toplevel, Label, Entry, Button, Frame, filedialog, StringVar
-# import sqlite3
-# import re
-from tkcalendar import DateEntry
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import networkx as nx
-from collections import Counter
-from datetime import datetime
-import os
 import csv
-from tkinter import *
-from app import *
-from db import Database
+import os
 from models import *
+from db import *
 
 class MainApp:
     """
-    Главное окно приложения. в нем расположено 5 кнопок: Клиенты, Товары, Заказы,
-    Статистика, Выход. При нажатии на любую кнопку открывается дополнительное окно,
-    с соответствующим функционалом.
+    Главное окно приложения для управления интернет-магазином.
+    Класс создаёт графический интерфейс с пятью основными кнопками:
+    Клиенты, Товары, Заказы, Статистика и Выход. Каждая кнопка открывает
+    соответствующее окно для выполнения операций с данными или просмотра статистики.
     """
+
     def __init__(self, root):
         """
-        Конструктор класса
-        :param root:
+        Инициализирует главное окно приложения.
+        Настраивает заголовок, размеры и элементы интерфейса: заголовок и кнопки
+        для перехода к различным модулям приложения.
+        Args:
+            root (tk.Tk): Основное окно Tkinter, в котором будет размещён интерфейс.
         """
         self.root = root
         self.root.title("Управление интернет-магазином")
@@ -55,48 +52,66 @@ class MainApp:
                             text=text,
                             font=("Arial", 14),
                             width=20,
-                            height=1, command=command)
+                            height=1,
+                            command=command)
             btn.pack(pady=5)
 
     def open_clients_window(self):
         """
-        Метод открытия окна для добавления, удаления, редактирования, поиска клиентов
+        Открывает окно управления клиентами.
+        Создаёт новое окно (Toplevel), в котором можно добавлять, удалять,
+        редактировать и искать клиентов.
         """
         ClientsWindow(Toplevel(self.root))
 
     def open_products_window(self):
         """
-        Метод открытия окна для добавления, удаления, редактирования, поиска товаров
+        Открывает окно управления товарами.
+        Создаёт новое окно (Toplevel), в котором можно добавлять, удалять,
+        редактировать и искать товары.
         """
         ProductsWindow(Toplevel(self.root))
 
     def open_orders_window(self):
         """
-        Метод открытия окна для добавления, удаления, редактирования, поиска заказов
+        Открывает окно управления заказами.
+        Создаёт новое окно (Toplevel), в котором можно добавлять, удалять,
+        редактировать и искать заказы.
         """
         OrdersWindow(Toplevel(self.root))
 
     def open_stats_window(self):
         """
-        Метод открытия окна с различной статистикой
+        Открывает окно статистики.
+        Создаёт новое окно (Toplevel), в котором отображается различная
+        аналитическая информация по интернет-магазину.
         """
         StatsWindow(Toplevel(self.root))
 
     def exit_app(self):
         """
-        Выход из приложения с подтверждением
+        Завершает работу приложения с подтверждением.
+        Показывает диалоговое окно с вопросом о подтверждении выхода.
+        Если пользователь подтверждает — приложение закрывается.
         """
         if messagebox.askyesno("Выход", "Вы уверены, что хотите выйти?"):
             self.root.quit()
 
+
 class ClientsWindow:
     """
-    Окно управления клиентами
+    Окно управления клиентами интернет-магазина.
+    Позволяет просматривать, добавлять, редактировать, удалять и искать клиентов.
+    Поддерживает сортировку по столбцам, экспорт в CSV и live-поиск по введённому тексту.
     """
+
     def __init__(self, window):
         """
-        Конструктор класса создания новых клиентов
-        :param window:
+        Инициализирует окно управления клиентами.
+        Создаёт графический интерфейс с формой для ввода данных, таблицей клиентов,
+        строкой поиска и кнопками действий. Загружает список клиентов из базы данных.
+        Args:
+            window (tk.Toplevel): Окно верхнего уровня, в котором будет отображаться интерфейс.
         """
         self.window = window
         self.window.title("Клиенты")
@@ -171,7 +186,7 @@ class ClientsWindow:
             self.tree.column(col, width=50 if col == "ID" else 150)
 
         scrollbar = Scrollbar(table_frame, orient="vertical", command=self.tree.yview)
-        self.tree.configure(yscroll=scrollbar.set)
+        self.tree.configure(yscrollcommand=scrollbar.set)
         scrollbar.pack(side="right", fill="y")
         self.tree.pack(side="left", fill="both", expand=True)
 
@@ -187,14 +202,14 @@ class ClientsWindow:
         Button(action_btn_frame, text="Выйти", command=self.window.destroy).pack(side="left", padx=5)
 
         self.current_client_id = None  # Для редактирования
-
-        # Загрузка данных
         self.all_clients = []  # Хранит все данные для поиска и сортировки
         self.load_clients()
 
     def load_clients(self):
         """
-        Загрузка всех клиентов из БД.
+        Загружает всех клиентов из базы данных.
+        Получает данные из `Database.load_client()` и сохраняет в `self.all_clients`.
+        В случае ошибки выводит сообщение об ошибке.
         """
         try:
             self.all_clients = self.db.load_client()
@@ -204,9 +219,10 @@ class ClientsWindow:
 
     def display_clients(self, clients):
         """
-        Отображение клиентов в таблице
-        :param clients:
-        :return:
+        Отображает список клиентов в виджете Treeview.
+        Перед отображением очищает текущую таблицу.
+        Args:
+            clients (list): Список кортежей с данными клиентов (ID, Имя, Email, Телефон, Адрес).
         """
         for row in self.tree.get_children():
             self.tree.delete(row)
@@ -215,9 +231,11 @@ class ClientsWindow:
 
     def filter_clients(self, *args):
         """
-        Поиск (фильтрация) клиентов
-        :param args:
-        :return:
+        Фильтрует клиентов по введённому в поле поиска тексту.
+        Поиск производится по всем полям (регистронезависимо). При пустом запросе
+        отображаются все клиенты.
+        Args:
+            *args: Игнорируемые аргументы.
         """
         term = self.search_var.get().lower()
         if not term:
@@ -231,9 +249,10 @@ class ClientsWindow:
 
     def sort_by(self, col):
         """
-        Сортировка по колонке при нажатии на заголовок колонки
-        :param col:
-        :return:
+        Сортирует строки таблицы по выбранному столбцу.
+        При повторном нажатии меняет порядок сортировки (по возрастанию/убыванию).
+        Args:
+            col (str): Название столбца, по которому нужно отсортировать.
         """
         items = [(self.tree.set(child, col), child) for child in self.tree.get_children()]
         reverse = self.sort_reverse[col]
@@ -246,9 +265,10 @@ class ClientsWindow:
 
     def on_double_click(self, event):
         """
-        Обработка двойного клика — редактирование
-        :param event:
-        :return:
+        Обрабатывает двойной клик по строке таблицы — заполняет форму данными клиента.
+        Устанавливает режим редактирования и активирует кнопку "Обновить".
+        Args:
+            event (tk.Event): Событие двойного клика.
         """
         selected = self.tree.selection()
         if not selected:
@@ -274,36 +294,35 @@ class ClientsWindow:
 
     def save_client(self):
         """
-        Сохранение (добавление или обновление)
-        :return:
+        Сохраняет клиента в базу данных — добавляет нового или обновляет существующего.
+        Если `current_client_id` не задан — добавляет нового клиента.
+        Иначе — обновляет данные по существующему ID. После сохранения очищает форму
+        и перезагружает таблицу.
+        Показывает уведомление об успехе или ошибке.
         """
-        client = Client
-
-        client.c_name = self.name_entry.get().strip()
-        client.email = self.email_entry.get().strip()
-        client.phone = self.phone_entry.get().strip()
-        client.address = self.address_entry.get().strip()
-
         self.window.attributes("-topmost", False)
 
         try:
+            client = Client(
+                self.name_entry.get().strip(),
+                self.email_entry.get().strip(),
+                self.phone_entry.get().strip(),
+                self.address_entry.get().strip())
+
             if self.current_client_id is None:
-                # Добавление нового
                 self.db.insert_client(
-                    client.c_name,
+                    client.name,
                     client.email,
                     client.phone,
                     client.address)
                 msg = "Клиент добавлен!"
             else:
-                # Обновление существующего
                 self.db.update_client(
                     self.current_client_id,
-                    client.c_name,
+                    client.name,
                     client.email,
                     client.phone,
-                    client.address
-                )
+                    client.address)
                 msg = "Клиент обновлён!"
                 self.clear_fields()
 
@@ -312,13 +331,16 @@ class ClientsWindow:
             self.filter_clients()
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось сохранить клиента: {e}")
-
-        self.window.attributes("-topmost", True)
+        finally:
+            self.window.attributes("-topmost", True)
 
     def delete_client(self):
         """
-        Удаление клиента
-        :return:
+        Удаляет выбранного клиента после подтверждения.
+        Если клиент не выбран — выводит предупреждение. При подтверждении удаляет
+        запись через `Database.delete_client()` и обновляет таблицу.
+        Raises:
+            Показывает сообщение об ошибке при неудаче.
         """
         self.window.attributes("-topmost", False)
         selected = self.tree.selection()
@@ -338,13 +360,13 @@ class ClientsWindow:
                 self.filter_clients()
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Не удалось удалить клиента: {e}")
-
         self.window.attributes("-topmost", True)
 
     def export_to_csv(self):
         """
-        Экспорт в CSV
-        :return:
+        Экспортирует список всех клиентов в CSV-файл.
+        Открывает диалог выбора места сохранения. Если данных нет — уведомляет об этом.
+        В случае успеха — показывает имя сохранённого файла.
         """
         self.window.attributes("-topmost", False)
         if not self.all_clients:
@@ -367,13 +389,12 @@ class ClientsWindow:
             messagebox.showinfo("Успех", f"Данные экспортированы в {os.path.basename(file_path)}")
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось экспортировать: {e}")
-
-        self.window.attributes("-topmost", False)
+        self.window.attributes("-topmost", True)
 
     def clear_fields(self):
         """
-        Очистка формы
-        :return:
+        Очищает поля формы ввода и сбрасывает режим редактирования.
+        Устанавливает кнопку "Сохранить" и сбрасывает `current_client_id`.
         """
         self.name_entry.delete(0, tk.END)
         self.email_entry.delete(0, tk.END)
@@ -382,14 +403,22 @@ class ClientsWindow:
         self.current_client_id = None
         self.save_btn.config(text="Сохранить")
 
+
 class ProductsWindow:
     """
-    Окно управления товарами
+    Окно управления товарами интернет-магазина.
+    Позволяет просматривать, добавлять, редактировать, удалять и искать товары.
+    Поддерживает live-поиск, сортировку по столбцам, экспорт в CSV и редактирование
+    по двойному клику на строке таблицы.
     """
+
     def __init__(self, window):
         """
-        Конструктор класса окна добавления товаров
-        :param window:
+        Инициализирует окно управления товарами.
+        Создаёт графический интерфейс с формой ввода, таблицей товаров, поиском
+        и кнопками действий. Загружает список товаров из базы данных.
+        Args:
+            window (tk.Toplevel): Окно верхнего уровня, в котором будет отображаться интерфейс.
         """
         self.window = window
         self.window.title("Товары")
@@ -416,7 +445,7 @@ class ProductsWindow:
         self.name_entry = Entry(form_frame, width=30)
         self.name_entry.grid(row=0, column=1, padx=5, pady=5)
 
-        Label(form_frame, text="Цена").grid(row=0, column=2, sticky="w", padx=5, pady=5)
+        Label(form_frame, text="Цена:").grid(row=0, column=2, sticky="w", padx=5, pady=5)
         self.price_entry = Entry(form_frame, width=30)
         self.price_entry.grid(row=0, column=3, padx=5, pady=5)
 
@@ -462,7 +491,7 @@ class ProductsWindow:
 
         # Прокрутка
         scrollbar = Scrollbar(table_frame, orient="vertical", command=self.tree.yview)
-        self.tree.configure(yscroll=scrollbar.set)
+        self.tree.configure(yscrollcommand=scrollbar.set)
         scrollbar.pack(side="right", fill="y")
         self.tree.pack(side="left", fill="both", expand=True)
 
@@ -479,27 +508,27 @@ class ProductsWindow:
         Button(action_btn_frame, text="Выйти", command=self.window.destroy).pack(side="left", padx=5)
 
         self.current_product_id = None  # Для редактирования
-
-        # Загрузка данных
         self.all_products = []  # Хранит все данные для поиска и сортировки
         self.load_products()
 
     def load_products(self):
         """
-        Загрузка всех товаров из БД
-        :return:
+        Загружает все товары из базы данных.
+        Вызывает метод `Database.load_product()`, сохраняет результат в `self.all_products`
+        и отображает данные в таблице. В случае ошибки показывает сообщение.
         """
         try:
             self.all_products = self.db.load_product()
             self.display_products(self.all_products)
         except Exception as e:
-            messagebox.showerror("Ошибка", f"Не удалось загрузить товаров: {e}")
+            messagebox.showerror("Ошибка", f"Не удалось загрузить товары: {e}")
 
     def display_products(self, products):
         """
-        Отображение товаров в таблице
-        :param products:
-        :return:
+        Отображает список товаров в виджете Treeview.
+        Перед отображением очищает текущую таблицу.
+        Args:
+            products (list): Список кортежей с данными товаров (ID, Наименование, Цена, Количество).
         """
         for row in self.tree.get_children():
             self.tree.delete(row)
@@ -508,27 +537,25 @@ class ProductsWindow:
 
     def filter_products(self, *args):
         """
-        Поиск (фильтрация)
-        :param args:
-        :return:
+        Фильтрует товары по тексту из поля поиска (регистронезависимо).
+        При пустом запросе отображаются все товары. Поиск ведётся по всем полям.
         """
         term = self.search_var.get().lower()
         if not term:
             filtered = self.all_products
         else:
             filtered = [
-                c for c in self.all_products
-                if any(term in str(field).lower() for field in c)
+                p for p in self.all_products
+                if any(term in str(field).lower() for field in p)
             ]
         self.display_products(filtered)
 
     def sort_by(self, col):
         """
-        Сортировка по колонке, получаем индекс колонки,
-        определяем, по какому полю сортировать (например, "Имя" -> "name"),
-        перестраиваем строки, меняем направление для следующего клика
-        :param col:
-        :return:
+        Сортирует строки таблицы по выбранному столбцу.
+        При повторном нажатии меняет направление сортировки (по возрастанию/убыванию).
+        Args:
+            col (str): Название столбца, по которому выполняется сортировка.
         """
         items = [(self.tree.set(child, col), child) for child in self.tree.get_children()]
         reverse = self.sort_reverse[col]
@@ -541,9 +568,10 @@ class ProductsWindow:
 
     def on_double_click(self, event):
         """
-        Обработка двойного клика — редактирование
-        :param event:
-        :return:
+        Обрабатывает двойной клик по строке — заполняет форму данными товара.
+        Активирует режим редактирования и меняет текст кнопки на "Обновить".
+        Args:
+            event (tk.Event): Событие двойного клика.
         """
         selected = self.tree.selection()
         if not selected:
@@ -552,7 +580,6 @@ class ProductsWindow:
         values = item['values']
         product_id = values[0]
 
-        # Заполняем поля
         self.name_entry.delete(0, tk.END)
         self.name_entry.insert(0, values[1])
 
@@ -562,57 +589,56 @@ class ProductsWindow:
         self.stock_entry.delete(0, tk.END)
         self.stock_entry.insert(0, values[3])
 
-        # Сохранение ID для обновления
         self.current_product_id = product_id
         self.save_btn.config(text="Обновить")
 
     def save_product(self):
         """
-        Сохранение (добавление или обновление)
-        :return:
+        Сохраняет товар в базу данных — добавляет новый или обновляет существующий.
+        Если `current_product_id` не задан — добавляет товар.
+        Иначе — обновляет данные по ID. После сохранения очищает форму,
+        перезагружает таблицу и применяет текущий фильтр.
+        Показывает уведомление об успехе или ошибке.
         """
-        product = Product
-        product.p_name = self.name_entry.get().strip()
-        product.price = self.price_entry.get().strip()
-        product.stock = self.stock_entry.get().strip()
-
         self.window.attributes("-topmost", False)
 
         try:
+            product = Product(
+                self.name_entry.get().strip(),
+                int(self.price_entry.get().strip()),
+                int(self.stock_entry.get().strip()),
+            )
+
             if self.current_product_id is None:
-                # Добавление нового
-                self.db.insert_product(
-                    product.p_name,
-                    product.price,
-                    product.stock
-                    )
+                self.db.insert_product(product.name, product.price, product.stock)
                 msg = "Товар добавлен!"
             else:
-                # Обновление существующего
                 self.db.update_product(
                     self.current_product_id,
-                    product.p_name,
+                    product.name,
                     product.price,
                     product.stock
-                    )
+                )
                 msg = "Товар обновлён!"
-                self.clear_fields()  # Сбрасываем режим редактирования
+                self.clear_fields()
 
             messagebox.showinfo("Успех", msg)
             self.load_products()
-            self.filter_products()  # Применяем текущий фильтр
+            self.filter_products()
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось сохранить товар: {e}")
-
-        self.window.attributes("-topmost", True)
+        finally:
+            self.window.attributes("-topmost", True)
 
     def delete_product(self):
         """
-        Удаление товара
-        :return:
+        Удаляет выбранный товар после подтверждения.
+        Если строка не выбрана — выводит предупреждение. При подтверждении удаляет
+        запись через `Database.delete_product()` и обновляет таблицу.
+        Raises:
+            Показывает сообщение об ошибке в случае неудачи.
         """
         self.window.attributes("-topmost", False)
-
         selected = self.tree.selection()
         if not selected:
             messagebox.showwarning("Удаление", "Выберите товар для удаления.")
@@ -630,13 +656,15 @@ class ProductsWindow:
                 self.filter_products()
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Не удалось удалить товар: {e}")
-
-            self.window.attributes("-topmost", True)
+        self.window.attributes("-topmost", True)
 
     def export_to_csv(self):
         """
-        Экспорт в CSV
-        :return:
+        Экспортирует список всех товаров в CSV-файл.
+        Открывает диалог сохранения. Если данных нет — уведомляет об этом.
+        В случае успеха — показывает имя сохранённого файла.
+        Raises:
+            Показывает сообщение об ошибке при проблеме с записью файла.
         """
         self.window.attributes("-topmost", False)
         if not self.all_products:
@@ -650,6 +678,7 @@ class ProductsWindow:
         )
         if not file_path:
             return
+
         try:
             with open(file_path, mode='w', encoding='utf-8', newline='') as f:
                 writer = csv.writer(f)
@@ -658,13 +687,12 @@ class ProductsWindow:
             messagebox.showinfo("Успех", f"Данные экспортированы в {os.path.basename(file_path)}")
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось экспортировать: {e}")
-
         self.window.attributes("-topmost", True)
 
     def clear_fields(self):
         """
-        Очистка формы
-        :return:
+        Очищает поля формы и сбрасывает режим редактирования.
+        Устанавливает кнопку "Сохранить" и обнуляет `current_product_id`.
         """
         self.name_entry.delete(0, tk.END)
         self.price_entry.delete(0, tk.END)
@@ -672,14 +700,24 @@ class ProductsWindow:
         self.current_product_id = None
         self.save_btn.config(text="Сохранить")
 
+
 class OrdersWindow:
     """
-    Окно управления заказами
+    Окно управления заказами интернет-магазина.
+    Позволяет добавлять, просматривать, редактировать, удалять и искать заказы.
+    Поддерживает выбор клиента и товара из выпадающих списков, ввод количества,
+    даты заказа, а также экспорт данных в CSV.
     """
+
     def __init__(self, window):
         """
-        Конструктор класса создания/редактирования новых заказов
-        :param window:
+        Инициализирует окно управления заказами.
+
+        Создаёт интерфейс с формой ввода, таблицей заказов, поиском и кнопками действий.
+        Загружает список заказов из базы данных и заполняет комбобоксы клиентами и товарами.
+
+        Args:
+            window (tk.Toplevel): Окно верхнего уровня для отображения интерфейса.
         """
         self.window = window
         self.window.title("Заказы")
@@ -690,7 +728,7 @@ class OrdersWindow:
         frame = Frame(self.window, padx=10, pady=10)
         frame.pack(fill="both", expand=True)
 
-        # Поле поиска клиента и товара
+        # --- Поиск ---
         search_frame = Frame(frame)
         search_frame.grid(row=0, column=0, columnspan=2, sticky="ew", pady=5)
         Label(search_frame, text="Поиск:").pack(side="left", padx=5)
@@ -698,41 +736,46 @@ class OrdersWindow:
         self.search_var.trace("w", self.filter_orders)  # Live search
         Entry(search_frame, textvariable=self.search_var, width=40).pack(side="left", padx=5)
 
+        # --- Форма добавления/редактирования ---
         form_frame = LabelFrame(frame, text="Добавить/Редактировать заказ", padx=10, pady=10)
         form_frame.grid(row=1, column=0, columnspan=2, sticky="ew", pady=10)
 
-        # Поля выбора клиента и товара
+        # Клиент
         Label(form_frame, text="Клиент:").grid(row=0, column=0, sticky="w", padx=5, pady=5)
         self.client_var = StringVar()
-        name_client = [cl[1] for cl in self.db.get_clients()]   # список для комбобокса
+        name_client = [cl[1] for cl in self.db.get_clients()]
         self.client_combo = ttk.Combobox(
                                         form_frame,
                                         values=sorted(name_client),
                                         textvariable=self.client_var,
-                                        state="readonly",
-                                        width=30)
+                                        width=30
+                                    )
         self.client_combo.grid(row=0, column=1, padx=5, pady=5)
 
+        # Товар
         Label(form_frame, text="Товар:").grid(row=1, column=0, sticky="w", padx=5, pady=5)
         self.product_var = StringVar()
-        name_product = [pr[1] for pr in self.db.get_products()]   # список для комбобокса
+        name_product = [pr[1] for pr in self.db.get_products()]
         self.product_combo = ttk.Combobox(
                                         form_frame,
                                         values=sorted(name_product),
                                         textvariable=self.product_var,
-                                        state="readonly",
-                                        width=30)
+                                        width=30
+                                    )
         self.product_combo.grid(row=1, column=1, padx=5, pady=5)
 
+        # Количество
         Label(form_frame, text="Количество:").grid(row=0, column=3, sticky="w", padx=5, pady=5)
         self.quantity_entry = Entry(form_frame, width=30)
         self.quantity_entry.grid(row=0, column=4, padx=5, pady=5)
 
+        # Дата заказа
         Label(form_frame, text="Дата заказа:").grid(row=1, column=3, sticky="w", padx=5, pady=5)
         self.order_date_entry = DateEntry(
             form_frame,
             date_pattern="yyyy-mm-dd",
-            width=30)
+            width=30
+        )
         self.order_date_entry.grid(row=1, column=4, padx=5, pady=5)
 
         # Кнопки формы
@@ -770,8 +813,8 @@ class OrdersWindow:
             self.tree.heading(col, text=text, command=lambda c=col: self.sort_by(c))
             self.tree.column(col, width=50 if col == "ID" else 150)
 
-        scrollbar = Scrollbar(table_frame, orient="vertical", command=self.tree.yview)
-        self.tree.configure(yscroll=scrollbar.set)
+        scrollbar = ttk.Scrollbar(table_frame, orient="vertical", command=self.tree.yview)
+        self.tree.configure(yscrollcommand=scrollbar.set)
         scrollbar.pack(side="right", fill="y")
         self.tree.pack(side="left", fill="both", expand=True)
 
@@ -787,14 +830,15 @@ class OrdersWindow:
         Button(action_btn_frame, text="Выйти", command=self.window.destroy).pack(side="left", padx=5)
 
         self.current_order_id = None  # Для редактирования
-
-        # Загрузка данных
         self.all_orders = []  # Хранит все данные для поиска и сортировки
         self.load_orders()
 
     def load_orders(self):
         """
-        Загрузка всех заказов из БД.
+        Загружает все заказы из базы данных.
+
+        Вызывает `self.db.load_order()` и сохраняет результат в `self.all_orders`.
+        Отображает данные в таблице. При ошибке показывает сообщение.
         """
         try:
             self.all_orders = self.db.load_order()
@@ -804,9 +848,12 @@ class OrdersWindow:
 
     def display_orders(self, orders):
         """
-        Отображение заказов в таблице
-        :param orders:
-        :return:
+        Отображает список заказов в Treeview.
+
+        Очищает текущую таблицу и добавляет новые строки.
+
+        Args:
+            orders (list): Список кортежей с данными заказов (ID, Клиент, Товар, Кол-во, Дата).
         """
         for row in self.tree.get_children():
             self.tree.delete(row)
@@ -815,25 +862,25 @@ class OrdersWindow:
 
     def filter_orders(self, *args):
         """
-        Поиск (фильтрация) заказов
-        :param args:
-        :return:
+        Фильтрует заказы по тексту из поля поиска (регистронезависимо).
+        Поиск ведётся по всем полям. При пустом запросе отображаются все заказы.
         """
         term = self.search_var.get().lower()
         if not term:
             filtered = self.all_orders
         else:
             filtered = [
-                c for c in self.all_orders
-                if any(term in str(field).lower() for field in c)
+                o for o in self.all_orders
+                if any(term in str(field).lower() for field in o)
             ]
         self.display_orders(filtered)
 
     def sort_by(self, col):
         """
-        Сортировка по колонке при нажатии на заголовок колонки
-        :param col:
-        :return:
+        Сортирует строки таблицы по выбранному столбцу.
+        При повторном клике меняет направление сортировки (по возрастанию/убыванию).
+        Args:
+            col (str): Название столбца для сортировки.
         """
         items = [(self.tree.set(child, col), child) for child in self.tree.get_children()]
         reverse = self.sort_reverse[col]
@@ -846,9 +893,10 @@ class OrdersWindow:
 
     def on_double_click(self, event):
         """
-        Обработка двойного клика — редактирование
-        :param event:
-        :return:
+        Обрабатывает двойной клик — заполняет форму данными выбранного заказа.
+        Активирует режим редактирования и меняет текст кнопки на "Обновить".
+        Args:
+            event (tk.Event): Событие двойного клика.
         """
         selected = self.tree.selection()
         if not selected:
@@ -874,16 +922,17 @@ class OrdersWindow:
 
     def save_order(self):
         """
-        Сохранение (добавление или обновление)
-        :return:
+        Сохраняет заказ в базу данных (добавление или обновление).
+        Проверяет корректность ввода: клиент и товар выбраны, количество — положительное число.
+        Если `current_order_id` не задан — добавляет новый заказ. Иначе — обновляет существующий.
+        Raises:
+            Показывает сообщение об ошибке при неверных данных или проблемах с БД.
         """
         self.window.attributes("-topmost", False)
-        # client_str = self.client_var.get()
-        # product_str = self.product_var.get()
+
         client_str = self.client_combo.get()
         product_str = self.product_combo.get()
-        # client_str = self.client_var
-        # product_str = self.product_var
+
         try:
             quantity = int(self.quantity_entry.get())
         except ValueError:
@@ -893,35 +942,36 @@ class OrdersWindow:
         if not client_str or not product_str or quantity <= 0:
             messagebox.showerror("Ошибка", "Все поля обязательны, количество > 0.")
             return
-        print(f'{client_str=}, {product_str=}')
-        pass
-        order = Order
-        order.client_id = self.db.get_client_id(client_str)
-        order.product_id = self.db.get_product_id(product_str)
-        order.quantity = quantity
-        order.order_date = self.order_date_entry.get()
-        # Order.order_date = datetime.now().strftime("%Y-%m-%d")
 
         try:
-            # conn = sqlite3.connect(DB_NAME)
-            self.db.insert_order(
-                order.client_id,
-                order.product_id,
-                order.quantity,
-                order.order_date
-            )
+            client_id = self.db.get_client_id(client_str)[0]
+            product_id = self.db.get_product_id(product_str)[0]
+            order_date = self.order_date_entry.get()
 
-            messagebox.showinfo("Успех", "Заказ добавлен!")
-            self.clear_fields()
+            if self.current_order_id is None:
+                # Добавление нового заказа
+                self.db.insert_order(client_id, product_id, quantity, order_date)
+                messagebox.showinfo("Успех", "Заказ добавлен!")
+                self.clear_fields()
+            else:
+                self.db.update_order(self.current_order_id, client_id, product_id, quantity, order_date)
+                messagebox.showinfo("Успех", "Заказ обновлён!")
+                self.clear_fields()
+
             self.load_orders()
+            self.filter_orders()
         except Exception as e:
             messagebox.showerror("Ошибка", f"Не удалось сохранить заказ: {e}")
+        finally:
             self.window.attributes("-topmost", True)
 
     def delete_order(self):
         """
-        Удаление заказа
-        :return:
+        Удаляет выбранный заказ после подтверждения.
+        Если строка не выбрана — выводит предупреждение. При подтверждении удаляет
+        запись через `self.db.delete_order()` и обновляет таблицу.
+        Raises:
+            Показывает сообщение об ошибке при неудаче.
         """
         self.window.attributes("-topmost", False)
         selected = self.tree.selection()
@@ -931,24 +981,24 @@ class OrdersWindow:
 
         item = self.tree.item(selected[0])
         order_id = item['values'][0]
-        # client_name = item['values'][1]
 
-        if messagebox.askyesno("Подтверждение", f"Удалить заказ '{order_id}'?"):
+        if messagebox.askyesno("Подтверждение", f"Удалить заказ ID {order_id}?"):
             try:
-                # conn = sqlite3.connect(DB_NAME)
                 self.db.delete_order(order_id)
                 messagebox.showinfo("Успех", "Заказ удалён.")
                 self.load_orders()
                 self.filter_orders()
             except Exception as e:
                 messagebox.showerror("Ошибка", f"Не удалось удалить заказ: {e}")
-
-            self.window.attributes("-topmost", True)
+        self.window.attributes("-topmost", True)
 
     def export_to_csv(self):
         """
-        Экспорт в CSV
-        :return:
+        Экспортирует список всех заказов в CSV-файл.
+        Открывает диалог сохранения. Если данных нет — уведомляет об этом.
+        В случае успеха — показывает имя сохранённого файла.
+        Raises:
+            Показывает сообщение об ошибке при проблеме с записью файла.
         """
         if not self.all_orders:
             messagebox.showinfo("Экспорт", "Нет данных для экспорта.")
@@ -973,8 +1023,8 @@ class OrdersWindow:
 
     def clear_fields(self):
         """
-        Очистка формы
-        :return:
+        Очищает все поля формы и сбрасывает режим редактирования.
+        Устанавливает кнопку "Сохранить" и обнуляет `current_order_id`.
         """
         self.client_combo.delete(0, tk.END)
         self.product_combo.delete(0, tk.END)
@@ -983,11 +1033,20 @@ class OrdersWindow:
         self.current_order_id = None
         self.save_btn.config(text="Сохранить")
 
+
 class StatsWindow:
+    """
+    Окно отображения статистики интернет-магазина.
+    Предоставляет графики: топ-5 клиентов, динамику заказов по датам и граф связей клиентов и товаров.
+    Графики отображаются встроенными в Tkinter с помощью Matplotlib.
+    """
+
     def __init__(self, window):
         """
-        Конструктор класса статистики
-        :param window:
+        Инициализирует окно статистики.
+        Создаёт интерфейс с кнопками выбора типа графика и областью для отображения графиков.
+        Args:
+            window (tk.Toplevel): Окно верхнего уровня для отображения интерфейса.
         """
         self.window = window
         self.window.title("Статистика")
@@ -998,47 +1057,46 @@ class StatsWindow:
         frame = Frame(self.window, padx=10, pady=10)
         frame.pack(fill="both", expand=True)
 
-        # Создаем кнопки для выбора вида статистики
+        # --- Кнопки выбора графика ---
         button_frame = ttk.Frame(frame)
         button_frame.pack(pady=5)
 
-        btn_top_clients = ttk.Button(button_frame,
-                                     text="Топ-5 клиентов",
-                                     command=self.show_top_5_clients)
-        btn_orders_trend = ttk.Button(button_frame,
-                                      text="Динамика заказов",
-                                      command=self.show_orders_trend)
-        btn_graph_clients_products = ttk.Button(button_frame,
-                                                text="Граф связей",
-                                                command=self.show_clients_products_graph)
-        btn_exit = ttk.Button(button_frame,
-                              text="Выйти",
-                              command=self.window.destroy)
+        btn_top_clients = ttk.Button(button_frame, text="Топ-5 клиентов", command=self.show_top_5_clients)
+        btn_orders_trend = ttk.Button(button_frame, text="Динамика заказов", command=self.show_orders_trend)
+        btn_graph_clients_products = ttk.Button(button_frame, text="Граф связей", command=self.show_clients_products_graph)
+        btn_exit = ttk.Button(button_frame, text="Выйти", command=self.window.destroy)
 
-        btn_top_clients.pack(side='left',
-                             padx=5)
-        btn_orders_trend.pack(side='left',
-                              padx=5)
-        btn_graph_clients_products.pack(side='left',
-                                        padx=5)
-        btn_exit.pack(side='left',
-                      padx=5)
+        btn_top_clients.pack(side='left', padx=5)
+        btn_orders_trend.pack(side='left', padx=5)
+        btn_graph_clients_products.pack(side='left', padx=5)
+        btn_exit.pack(side='left', padx=5)
 
+        # --- Область для графиков ---
         self.chart_frame = ttk.LabelFrame(frame, text="Статистика")
         self.chart_frame.pack(fill='both', expand=True, padx=10, pady=10)
 
-        self.current_canvas = None
+        self.current_canvas = None  # Для хранения текущего холста
 
     def clear_chart(self):
-        # Удаляем предыдущий график, если есть
+        """
+        Удаляет текущий график из интерфейса, если он существует.
+        """
         if self.current_canvas:
             self.current_canvas.get_tk_widget().destroy()
             self.current_canvas = None
 
     def show_top_5_clients(self):
+        """
+        Отображает горизонтальную столбчатую диаграмму топ-5 клиентов по количеству заказов.
+        Получает данные из `Database.top_5_client()` и строит график с помощью Matplotlib.
+        """
         self.clear_chart()
-
         results = self.db.top_5_client()
+
+        if not results:
+            messagebox.showinfo("Статистика", "Нет данных для отображения.")
+            return
+
         names = [row[1] for row in results]
         counts = [row[2] for row in results]
 
@@ -1053,9 +1111,18 @@ class StatsWindow:
         self.current_canvas.get_tk_widget().pack(fill='both', expand=True)
 
     def show_orders_trend(self):
+        """
+        Отображает линейный график динамики заказов по датам.
+        Получает данные из `self.db.show_order_trend()` и строит график с точками.
+        Ось X — даты, ось Y — количество заказов.
+        """
         self.clear_chart()
-
         results = self.db.show_order_trend()
+
+        if not results:
+            messagebox.showinfo("Статистика", "Нет данных для отображения.")
+            return
+
         dates = [row[0] for row in results]
         counts = [row[1] for row in results]
 
@@ -1064,7 +1131,6 @@ class StatsWindow:
         ax.set_xlabel('Дата заказа')
         ax.set_ylabel('Количество заказов')
         ax.set_title('Динамика заказов по датам')
-
         plt.setp(ax.get_xticklabels(), rotation=45)
 
         self.current_canvas = FigureCanvasTkAgg(fig, master=self.chart_frame)
@@ -1073,57 +1139,42 @@ class StatsWindow:
 
     def show_clients_products_graph(self):
         """
-        Строим граф связей клиентов и продуктов
-        :return:
+        Отображает граф связей между клиентами и товарами.
+        Каждый клиент и товар — узел. Ребро — заказ. Клиенты отображаются синими,
+        товары — зелёными. Используется NetworkX и Matplotlib.
         """
         self.clear_chart()
-
-        G = nx.Graph()
-
         edges = self.db.show_client_product_graph()
 
-        clients = set([row[0] for row in edges])
-        products = set([row[1] for row in edges])
+        if not edges:
+            messagebox.showinfo("Граф", "Нет данных для построения графа.")
+            return
+
+        G = nx.Graph()
+        clients = set(row[0] for row in edges)
+        products = set(row[1] for row in edges)
 
         G.add_nodes_from(clients, type='client')
         G.add_nodes_from(products, type='product')
-
-        for client_name, product_name in edges:
-            G.add_edge(client_name, product_name)
+        G.add_edges_from(edges)
 
         pos = nx.spring_layout(G)
-
         fig, ax = plt.subplots(figsize=(8, 6))
 
         client_nodes = [n for n, attr in G.nodes(data=True) if attr['type'] == 'client']
         product_nodes = [n for n, attr in G.nodes(data=True) if attr['type'] == 'product']
 
-        nx.draw_networkx_nodes(G, pos,
-                               nodelist=client_nodes,
-                               node_color='lightblue',
-                               node_size=500,
-                               label='Клиенты',
-                               ax=ax)
-
-        nx.draw_networkx_nodes(G, pos,
-                               nodelist=product_nodes,
-                               node_color='lightgreen',
-                               node_size=500,
-                               label='Продукты',
-                               ax=ax)
-
+        nx.draw_networkx_nodes(G, pos, nodelist=client_nodes, node_color='lightblue', node_size=500, label='Клиенты', ax=ax)
+        nx.draw_networkx_nodes(G, pos, nodelist=product_nodes, node_color='lightgreen', node_size=500, label='Продукты', ax=ax)
         nx.draw_networkx_edges(G, pos, ax=ax)
-
         nx.draw_networkx_labels(G, pos, ax=ax)
 
-        # Легенда вручную через Patch или Line2D объекты
         import matplotlib.patches as mpatches
         legend_handles = [
             mpatches.Patch(color='lightblue', label='Клиенты'),
             mpatches.Patch(color='lightgreen', label='Продукты')
         ]
         ax.legend(handles=legend_handles)
-
         ax.set_title('Граф связей клиентов и продуктов')
         ax.axis('off')
 
