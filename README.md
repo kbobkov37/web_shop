@@ -44,5 +44,5 @@
 ### 1. Клонируйте репозиторий
 
 ```bash
-git clone [https://github.com/ваше-имя/online-store-app.git](https://github.com/kbobkov37/web_shop.git)
+git clone [https://github.com/kbobkov37/web_shop.git](https://github.com/kbobkov37/web_shop.git)
 cd online-store-app
